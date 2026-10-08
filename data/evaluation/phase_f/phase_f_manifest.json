@@ -1,0 +1,115 @@
+{
+  "phase": "F",
+  "description": "Rigorous experimental evaluation of CarbonGrid-AI",
+  "created": "2026-09-26",
+  "updated": "2026-09-26",
+  "dataset": {
+    "name": "B2",
+    "source": "data/processed/b2_dataset.json",
+    "records": 182,
+    "task_types": {
+      "factual": 24,
+      "extraction": 20,
+      "explanation": 22,
+      "reasoning": 22,
+      "coding": 26,
+      "summarization": 22,
+      "scientific": 24,
+      "creative": 22
+    },
+    "complexity_levels": {
+      "1": 50,
+      "2": 50,
+      "3": 47,
+      "4": 35
+    },
+    "b2_safe_to_quantize": {
+      "safe": 95,
+      "unsafe": 87
+    }
+  },
+  "policies": [
+    {
+      "name": "always_fp16",
+      "description": "Every request runs Qwen2.5-1.5B FP16"
+    },
+    {
+      "name": "always_int4",
+      "description": "Every request runs Qwen2.5-1.5B INT4"
+    },
+    {
+      "name": "carbongrid",
+      "description": "C.1.1 classifier -> carbon provider -> Phase D Decision Engine -> FP16/INT4"
+    }
+  ],
+  "carbon_intensity_sensitivity": {
+    "values_gco2_per_kwh": [50, 100, 150, 200, 300, 500],
+    "source": "simulated",
+    "note": "For sensitivity analysis only; not real regional measurements"
+  },
+  "latency_constraints_ms": [null, 6000, 8000, 12000, 25000],
+  "stratification": [
+    "task_type",
+    "complexity_level",
+    "b2_safe_to_quantize",
+    "carbongrid_selected_precision"
+  ],
+  "metrics": [
+    "latency_ms",
+    "energy_wh",
+    "co2_g",
+    "quality_score",
+    "precision_selected",
+    "decision_reason",
+    "safety_probability",
+    "carbon_intensity",
+    "carbon_source",
+    "measurement_source"
+  ],
+  "statistical_methods": {
+    "paired_comparison": "Wilcoxon signed-rank test",
+    "effect_size": "rank-biserial correlation",
+    "reporting": ["mean", "median", "IQR", "p95_where_n_ge_20"],
+    "significance_level": 0.05,
+    "note": "No statistical significance claimed for pilot n=20; effect sizes reported only."
+  },
+  "repetitions": {
+    "pilot": "20 prompts x 3 policies x 1 rep",
+    "full": "182 prompts x 3 policies x 1 rep"
+  },
+  "hardware": {
+    "gpu": "NVIDIA RTX 2050 4GB",
+    "cuda_version": "11.8",
+    "torch_version": "2.7.1+cu118",
+    "driver": "591.86"
+  },
+  "software": {
+    "model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "classifier": "C.1.1 RandomForest (122 features, threshold=0.50)",
+    "decision_engine": "Phase D (safety gate, latency constraints, env cost comparison)",
+    "carbon_provider": "UK Carbon Intensity API (live) with offline fallback"
+  },
+  "sampling": {
+    "method": "stratified_proportional_largest_remainder",
+    "strata": ["task_type", "complexity_level"],
+    "pilot_size": 20,
+    "random_seed": 42,
+    "deterministic": true
+  },
+  "energy_measurement": {
+    "primary": "NVML power monitoring (measured)",
+    "fallback": {
+      "profile": "phase05",
+      "fp16_energy_wh": 0.0488,
+      "int4_energy_wh": 0.0493,
+      "label": "phase05_profile_fallback"
+    },
+    "b2_energy_reference_only": true,
+    "note": "B2 energy measurements are evaluation/reference data only, not used as production fallback."
+  },
+  "quality_evaluation": {
+    "reference_convention": "FP16 quality_score=1.0 is a reference convention, not an independently measured comparison against the B2 FP16 output.",
+    "int4_evaluation": "Evaluated against B2 FP16 output using task-specific evaluators (quality_v2.py)",
+    "b2_quality_threshold": 0.7
+  }
+}

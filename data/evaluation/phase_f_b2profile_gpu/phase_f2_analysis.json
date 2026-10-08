@@ -1,0 +1,550 @@
+{
+  "metadata": {
+    "experiment": "Phase F.2 Evaluation",
+    "timestamp": "2026-10-02T20:58:39.164858+00:00",
+    "f2_results_path": "data\\evaluation\\phase_f_b2profile_gpu\\phase_f_raw_results.json",
+    "frozen_results_path": "data\\evaluation\\phase_f\\phase_f_raw_results.json",
+    "f2_metadata": {
+      "phase": "F",
+      "timestamp": "2026-10-02T20:33:15.485732+00:00",
+      "dataset": "data\\processed\\b2_dataset.json",
+      "pilot_mode": false,
+      "pilot_size": null,
+      "latency_requirement_ms": null,
+      "carbon_intensity_override": null,
+      "carbon_mode": "offline",
+      "gpu": "NVIDIA GeForce RTX 2050",
+      "policies": [
+        "carbongrid"
+      ],
+      "profile_name": "b2_workload",
+      "sampling_method": "stratified_proportional_largest_remainder",
+      "sampling_strata": [
+        "task_type",
+        "complexity_level"
+      ],
+      "sampling_random_seed": 42,
+      "energy_fallback_profile": "phase05",
+      "quality_reference_convention": "FP16 quality_score=1.0 is a reference convention, not an independently measured comparison against the B2 FP16 output."
+    },
+    "frozen_metadata": {
+      "phase": "F",
+      "timestamp": "2026-09-26T14:36:43.236035+00:00",
+      "dataset": "data\\processed\\b2_dataset.json",
+      "pilot_mode": false,
+      "pilot_size": null,
+      "latency_requirement_ms": null,
+      "carbon_intensity_override": null,
+      "carbon_mode": "offline",
+      "gpu": "NVIDIA GeForce RTX 2050",
+      "policies": [
+        "always_fp16",
+        "always_int4",
+        "carbongrid"
+      ],
+      "sampling_method": "stratified_proportional_largest_remainder",
+      "sampling_strata": [
+        "task_type",
+        "complexity_level"
+      ],
+      "sampling_random_seed": 42,
+      "energy_fallback_profile": "phase05",
+      "quality_reference_convention": "FP16 quality_score=1.0 is a reference convention, not an independently measured comparison against the B2 FP16 output."
+    },
+    "matched_prompts": 182,
+    "total_f2_records": 182,
+    "successful_f2_records": 182,
+    "carbon_intensity_gco2_per_kwh": 200.0,
+    "note": "CO2 values are estimated from measured energy \u00d7 offline carbon intensity (200 gCO2/kWh). Not direct CO2 measurements."
+  },
+  "decision_analysis": {
+    "total_prompts": 182,
+    "successful": 182,
+    "precision_distribution": {
+      "int4": 95,
+      "fp16": 87
+    },
+    "decision_reasons": {
+      "int4_lower_environmental_cost": 95,
+      "safety_gate_failed": 87
+    },
+    "safety_gate_passed": {
+      "true": 95,
+      "false": 87
+    },
+    "fallback_used": 0,
+    "by_task_type": {
+      "factual": {
+        "fp16": 6,
+        "int4": 18,
+        "total": 24
+      },
+      "extraction": {
+        "fp16": 17,
+        "int4": 3,
+        "total": 20
+      },
+      "explanation": {
+        "fp16": 3,
+        "int4": 19,
+        "total": 22
+      },
+      "reasoning": {
+        "fp16": 16,
+        "int4": 6,
+        "total": 22
+      },
+      "coding": {
+        "fp16": 26,
+        "int4": 0,
+        "total": 26
+      },
+      "summarization": {
+        "fp16": 2,
+        "int4": 20,
+        "total": 22
+      },
+      "scientific": {
+        "fp16": 3,
+        "int4": 21,
+        "total": 24
+      },
+      "creative": {
+        "fp16": 14,
+        "int4": 8,
+        "total": 22
+      }
+    },
+    "safety_gate_failures_by_task": {
+      "factual": 6,
+      "extraction": 17,
+      "explanation": 3,
+      "reasoning": 16,
+      "coding": 26,
+      "summarization": 2,
+      "scientific": 3,
+      "creative": 14
+    },
+    "int4_selections": {
+      "count": 95,
+      "by_task": {
+        "factual": 18,
+        "extraction": 3,
+        "explanation": 19,
+        "reasoning": 6,
+        "summarization": 20,
+        "scientific": 21,
+        "creative": 8
+      },
+      "avg_safety_prob": 0.644711678079955
+    },
+    "estimated_energy": {
+      "fp16_wh": 0.1061,
+      "int4_wh": 0.0945,
+      "int4_lower_by_wh": 0.0116
+    }
+  },
+  "energy_latency_analysis": {
+    "f2_overall": {
+      "energy_wh": {
+        "n": 182,
+        "mean": 0.04784609340659341,
+        "median": 0.048353,
+        "std": 0.002030129143501296,
+        "iqr": 0.0021595000000000017,
+        "p25": 0.0469845,
+        "p75": 0.049144,
+        "p95": 0.050118,
+        "min": 0.040741,
+        "max": 0.052397
+      },
+      "latency_ms": {
+        "n": 182,
+        "mean": 8192.031052752889,
+        "median": 10059.063850087114,
+        "std": 2566.4896547397443,
+        "iqr": 5087.941150122788,
+        "p25": 5547.747174976394,
+        "p75": 10635.688325099181,
+        "p95": 11225.781199941412,
+        "min": 5107.038399903104,
+        "max": 11452.007200103253
+      },
+      "co2_g": {
+        "n": 182,
+        "mean": 0.009569218681318681,
+        "median": 0.009670600000000001,
+        "std": 0.0004060258287002591,
+        "iqr": 0.00043189999999999895,
+        "p25": 0.0093969,
+        "p75": 0.009828799999999999,
+        "p95": 0.0100236,
+        "min": 0.0081482,
+        "max": 0.0104794
+      }
+    },
+    "paired_vs_frozen_cg": {
+      "energy_wh": {
+        "n": 182,
+        "mean_diff": -0.001917631868131868,
+        "median_diff": -0.0014460000000000028,
+        "std_diff": 0.002431283950562044,
+        "wilcoxon": {
+          "test": "wilcoxon",
+          "n": 182,
+          "statistic": 1729.5,
+          "p_value": 1.8745943092086368e-20,
+          "effect_size_r": 0.7922896775355792,
+          "median_difference": -0.0014460000000000028,
+          "direction": "y_greater",
+          "significant": "True"
+        },
+        "bootstrap_ci": [
+          -0.0017259999999999984,
+          -0.0012580000000000022
+        ]
+      },
+      "latency_ms": {
+        "n": 182,
+        "mean_diff": 2653.3736791212245,
+        "median_diff": 4344.421999936458,
+        "std_diff": 2580.820513141799,
+        "wilcoxon": {
+          "test": "wilcoxon",
+          "n": 182,
+          "statistic": 1996.0,
+          "p_value": 5.852702575426857e-19,
+          "effect_size_r": 0.76028343241458,
+          "median_difference": 4344.421999936458,
+          "direction": "x_greater",
+          "significant": "True"
+        },
+        "bootstrap_ci": [
+          281.8270500865765,
+          4689.676199923269
+        ]
+      }
+    },
+    "paired_vs_frozen_fp16": {
+      "energy_wh": {
+        "n": 182,
+        "mean_diff": -0.0017808516483516486,
+        "median_diff": -0.0012369999999999985,
+        "std_diff": 0.0025626316228096048,
+        "wilcoxon": {
+          "test": "wilcoxon",
+          "n": 182,
+          "statistic": 2079.0,
+          "p_value": 1.6614440825151353e-18,
+          "effect_size_r": 0.7503152585119799,
+          "median_difference": -0.0012369999999999985,
+          "direction": "y_greater",
+          "significant": "True"
+        },
+        "bootstrap_ci": [
+          -0.001636000000000002,
+          -0.0008029999999999982
+        ]
+      },
+      "latency_ms": {
+        "n": 182,
+        "mean_diff": 2628.623501657365,
+        "median_diff": 4295.32030003611,
+        "std_diff": 2584.197587693589,
+        "wilcoxon": {
+          "test": "wilcoxon",
+          "n": 182,
+          "statistic": 1694.0,
+          "p_value": 1.1730197148529155e-20,
+          "effect_size_r": 0.7965531736023539,
+          "median_difference": 4295.32030003611,
+          "direction": "x_greater",
+          "significant": "True"
+        },
+        "bootstrap_ci": [
+          413.06340001756325,
+          4593.683249957394
+        ]
+      }
+    },
+    "paired_vs_frozen_int4": {
+      "energy_wh": {
+        "n": 182,
+        "mean_diff": -0.0019274230769230768,
+        "median_diff": -0.0015435000000000032,
+        "std_diff": 0.002312192186977493,
+        "wilcoxon": {
+          "test": "wilcoxon",
+          "n": 182,
+          "statistic": 1642.5,
+          "p_value": 5.915675806188512e-21,
+          "effect_size_r": 0.8027382453611962,
+          "median_difference": -0.0015435000000000032,
+          "direction": "y_greater",
+          "significant": "True"
+        },
+        "bootstrap_ci": [
+          -0.0017679999999999987,
+          -0.0011079999999999979
+        ]
+      },
+      "latency_ms": {
+        "n": 182,
+        "mean_diff": -2329.2325445006927,
+        "median_diff": -886.9740498485044,
+        "std_diff": 2609.128833912913,
+        "wilcoxon": {
+          "test": "wilcoxon",
+          "n": 182,
+          "statistic": 2825.0,
+          "p_value": 1.0755300243390649e-14,
+          "effect_size_r": 0.6607217918693329,
+          "median_difference": -886.9740498485044,
+          "direction": "y_greater",
+          "significant": "True"
+        },
+        "bootstrap_ci": [
+          -4279.061049921438,
+          -429.478150093928
+        ]
+      }
+    }
+  },
+  "quality_analysis": {
+    "overall": {
+      "f2_quality": {
+        "n": 182,
+        "mean": 0.8207892094204634,
+        "median": 0.9004449976362834,
+        "std": 0.20027554963899746,
+        "iqr": 0.3476211516587193,
+        "p25": 0.6523788483412807,
+        "p75": 1.0,
+        "p95": 1.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "fp16_selected": {
+        "n": 87,
+        "mean": 1.0,
+        "median": 1.0,
+        "std": 0.0,
+        "iqr": 0.0,
+        "p25": 1.0,
+        "p75": 1.0,
+        "p95": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "int4_selected": {
+        "n": 95,
+        "mean": 0.6566698538370983,
+        "median": 0.6554783073338596,
+        "std": 0.1424327730337119,
+        "iqr": 0.13673156029094247,
+        "p25": 0.5842912863637024,
+        "p75": 0.7210228466546449,
+        "p95": 0.8950639724731445,
+        "min": 0.0,
+        "max": 1.0
+      }
+    },
+    "int4_selections": {
+      "count": 95,
+      "by_task": {
+        "factual": {
+          "n": 18,
+          "mean": 0.7288428736081849,
+          "median": 0.7303497520360079,
+          "std": 0.12984111297607223,
+          "iqr": 0.18098719062227198,
+          "p25": 0.6543944269238097,
+          "p75": 0.8353816175460816,
+          "p95": null,
+          "min": 0.5155063509941101,
+          "max": 0.8965139389038086
+        },
+        "extraction": {
+          "n": 3,
+          "mean": 0.6666666666666666,
+          "median": 1.0,
+          "std": 0.5773502691896258,
+          "iqr": 0.5,
+          "p25": 0.5,
+          "p75": 1.0,
+          "p95": null,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "explanation": {
+          "n": 19,
+          "mean": 0.6439295491484042,
+          "median": 0.6647530402941404,
+          "std": 0.0607464473319663,
+          "iqr": 0.0900644605228399,
+          "p25": 0.5939548136510419,
+          "p75": 0.6840192741738818,
+          "p95": null,
+          "min": 0.5177080204174188,
+          "max": 0.7337227775801662
+        },
+        "reasoning": {
+          "n": 6,
+          "mean": 0.8052595022945033,
+          "median": 0.8520572213381759,
+          "std": 0.15962038217233307,
+          "iqr": 0.07350779337256108,
+          "p25": 0.8192911416410409,
+          "p75": 0.892798935013602,
+          "p95": null,
+          "min": 0.4901024147868156,
+          "max": 0.9225915349897792
+        },
+        "summarization": {
+          "n": 20,
+          "mean": 0.6146320370796323,
+          "median": 0.6248453129055433,
+          "std": 0.0930545009378962,
+          "iqr": 0.10945175227087489,
+          "p25": 0.5757867041766244,
+          "p75": 0.6852384564474993,
+          "p95": 0.7153925825644222,
+          "min": 0.3614176029814429,
+          "max": 0.7573136313053692
+        },
+        "scientific": {
+          "n": 21,
+          "mean": 0.6244474205991788,
+          "median": 0.615136015057187,
+          "std": 0.07277714735692416,
+          "iqr": 0.0778709527494349,
+          "p25": 0.5786469587573299,
+          "p75": 0.6565179115067648,
+          "p95": 0.757328348439276,
+          "min": 0.5205630537019957,
+          "max": 0.7823519835105309
+        },
+        "creative": {
+          "n": 8,
+          "mean": 0.5990261709768636,
+          "median": 0.6511029375053503,
+          "std": 0.15861204843189,
+          "iqr": 0.07803487538973952,
+          "p25": 0.5881346005716408,
+          "p75": 0.6661694759613803,
+          "p95": null,
+          "min": 0.2298524594306946,
+          "max": 0.7486876487731934
+        }
+      }
+    },
+    "b2_quality_reference": {
+      "n": 182,
+      "mean": 0.6062801555641599,
+      "median": 0.7180981672351545,
+      "std": 0.2819570690338596,
+      "iqr": 0.2923548300085791,
+      "p25": 0.49852800001390285,
+      "p75": 0.7908828300224819,
+      "p95": 0.9239490228240486,
+      "min": 0.0,
+      "max": 1.0
+    }
+  },
+  "safety_gate_analysis": {
+    "total": 182,
+    "passed": 95,
+    "failed": 87,
+    "pass_rate": 0.521978021978022,
+    "safety_probs": {
+      "n": 182,
+      "mean": 0.517900361758809,
+      "median": 0.5146608434795361,
+      "std": 0.15918560899848358,
+      "iqr": 0.2580141566046418,
+      "p25": 0.38350803223488295,
+      "p75": 0.6415221888395247,
+      "p95": 0.8075373524213126,
+      "min": 0.1694502950722008,
+      "max": 0.8930034113037366
+    },
+    "int4_safety_probs": {
+      "n": 95,
+      "mean": 0.644711678079955,
+      "median": 0.6405708218114463,
+      "std": 0.09982578149547541,
+      "iqr": 0.12584864422996545,
+      "p25": 0.5660603028389445,
+      "p75": 0.6919089470689099,
+      "p95": 0.8463577583907765,
+      "min": 0.5028283385931348,
+      "max": 0.8930034113037366
+    },
+    "passed_by_task": {
+      "factual": 18,
+      "extraction": 3,
+      "explanation": 19,
+      "reasoning": 6,
+      "summarization": 20,
+      "scientific": 21,
+      "creative": 8
+    },
+    "failed_by_task": {
+      "factual": 6,
+      "extraction": 17,
+      "explanation": 3,
+      "reasoning": 16,
+      "coding": 26,
+      "summarization": 2,
+      "scientific": 3,
+      "creative": 14
+    }
+  },
+  "co2_analysis": {
+    "carbon_intensity_gco2_per_kwh": 200.0,
+    "estimated_co2": {
+      "fp16_g": 0.02122,
+      "int4_g": 0.0189,
+      "int4_lower_by_g": 0.002319999999999999
+    },
+    "measured_co2": {
+      "overall": {
+        "n": 182,
+        "mean": 0.009569218681318681,
+        "median": 0.009670600000000001,
+        "std": 0.0004060258287002591,
+        "iqr": 0.00043189999999999895,
+        "p25": 0.0093969,
+        "p75": 0.009828799999999999,
+        "p95": 0.0100236,
+        "min": 0.0081482,
+        "max": 0.0104794
+      },
+      "fp16_selected": {
+        "n": 87,
+        "mean": 0.009455967816091954,
+        "median": 0.0095846,
+        "std": 0.00047027420489472,
+        "iqr": 0.0005307999999999979,
+        "p25": 0.0092238,
+        "p75": 0.009754599999999999,
+        "p95": 0.0100236,
+        "min": 0.0081482,
+        "max": 0.0104794
+      },
+      "int4_selected": {
+        "n": 95,
+        "mean": 0.009672932631578948,
+        "median": 0.0097342,
+        "std": 0.000303907576390721,
+        "iqr": 0.00027029999999999936,
+        "p25": 0.0095937,
+        "p75": 0.009864,
+        "p95": 0.010020759999999998,
+        "min": 0.0084182,
+        "max": 0.0101768
+      }
+    },
+    "note": "CO2 values are estimated from measured energy (Wh) \u00d7 offline carbon intensity (200 gCO2/kWh). Not direct CO2 measurements."
+  }
+}

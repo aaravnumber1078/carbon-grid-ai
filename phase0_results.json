@@ -1,0 +1,72 @@
+{
+  "python": {
+    "version": "3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:09:58) [MSC v.1929 64 bit (AMD64)]",
+    "executable": "C:\\Users\\viper\\anaconda3\\python.exe",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "torch": "2.7.1+cu118",
+    "transformers": "5.5.0",
+    "accelerate": "1.13.0",
+    "bitsandbytes": "0.49.2",
+    "llama_cpp": "NOT_INSTALLED",
+    "ollama": "NOT_INSTALLED"
+  },
+  "nvidia": {
+    "gpu_name": "NVIDIA GeForce RTX 2050",
+    "vram_mb": 4096,
+    "driver_version": "591.86",
+    "compute_capability": "8.6"
+  },
+  "pytorch_cuda": {
+    "torch_version": "2.7.1+cu118",
+    "cuda_available": true,
+    "torch_cuda_version": "11.8",
+    "device_count": 1,
+    "device_name": "NVIDIA GeForce RTX 2050",
+    "device_capability": [
+      8,
+      6
+    ],
+    "total_memory_mb": 4095,
+    "multi_processor_count": 16
+  },
+  "ollama": {
+    "available": true,
+    "models": "NAME          ID              SIZE      MODIFIED     \nqwen2.5:7b    845dbda0ea48    4.7 GB    4 months ago",
+    "api_models": {
+      "models": [
+        {
+          "name": "qwen2.5:7b",
+          "model": "qwen2.5:7b",
+          "modified_at": "2026-04-30T21:26:48.3197595+05:30",
+          "size": 4683087332,
+          "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "qwen2",
+            "families": [
+              "qwen2"
+            ],
+            "parameter_size": "7.6B",
+            "quantization_level": "Q4_K_M",
+            "context_length": 32768,
+            "embedding_length": 3584
+          },
+          "capabilities": [
+            "completion",
+            "tools"
+          ]
+        }
+      ]
+    }
+  },
+  "llama_cpp": {
+    "available": false,
+    "error": "llama_cpp not installed"
+  },
+  "disk": {
+    "total_gb": 451,
+    "used_gb": 389,
+    "free_gb": 61
+  }
+}

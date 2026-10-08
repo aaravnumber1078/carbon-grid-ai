@@ -1,0 +1,1458 @@
+[
+  {
+    "prompt_id": "fact_01",
+    "prompt": "What is the capital of Japan?",
+    "task_type": "factual",
+    "subcategory": "geography",
+    "complexity_level": 1,
+    "reference_answer": "Tokyo"
+  },
+  {
+    "prompt_id": "fact_02",
+    "prompt": "Who painted the Mona Lisa?",
+    "task_type": "factual",
+    "subcategory": "art",
+    "complexity_level": 1,
+    "reference_answer": "Leonardo da Vinci"
+  },
+  {
+    "prompt_id": "fact_03",
+    "prompt": "What is the chemical symbol for silver?",
+    "task_type": "factual",
+    "subcategory": "chemistry",
+    "complexity_level": 1,
+    "reference_answer": "Ag"
+  },
+  {
+    "prompt_id": "fact_04",
+    "prompt": "In what year did World War II end?",
+    "task_type": "factual",
+    "subcategory": "history",
+    "complexity_level": 1,
+    "reference_answer": "1945"
+  },
+  {
+    "prompt_id": "fact_05",
+    "prompt": "What is the largest ocean on Earth?",
+    "task_type": "factual",
+    "subcategory": "geography",
+    "complexity_level": 1,
+    "reference_answer": "Pacific Ocean"
+  },
+  {
+    "prompt_id": "fact_06",
+    "prompt": "Who wrote Romeo and Juliet?",
+    "task_type": "factual",
+    "subcategory": "literature",
+    "complexity_level": 1,
+    "reference_answer": "William Shakespeare"
+  },
+  {
+    "prompt_id": "fact_07",
+    "prompt": "What is the boiling point of water at sea level in Celsius?",
+    "task_type": "factual",
+    "subcategory": "physics",
+    "complexity_level": 1,
+    "reference_answer": "100\u00b0C"
+  },
+  {
+    "prompt_id": "fact_08",
+    "prompt": "What is the difference between mitosis and meiosis?",
+    "task_type": "factual",
+    "subcategory": "biology",
+    "complexity_level": 2,
+    "reference_answer": "Mitosis produces 2 identical diploid cells; meiosis produces 4 genetically diverse haploid cells"
+  },
+  {
+    "prompt_id": "fact_09",
+    "prompt": "Name the three branches of the US federal government.",
+    "task_type": "factual",
+    "subcategory": "civics",
+    "complexity_level": 2,
+    "reference_answer": "Legislative, Executive, Judicial"
+  },
+  {
+    "prompt_id": "fact_10",
+    "prompt": "What are the four fundamental forces of nature?",
+    "task_type": "factual",
+    "subcategory": "physics",
+    "complexity_level": 2,
+    "reference_answer": "Gravity, electromagnetism, strong nuclear, weak nuclear"
+  },
+  {
+    "prompt_id": "fact_11",
+    "prompt": "Which planet has the most moons in our solar system?",
+    "task_type": "factual",
+    "subcategory": "astronomy",
+    "complexity_level": 2,
+    "reference_answer": "Saturn (146 confirmed moons)"
+  },
+  {
+    "prompt_id": "fact_12",
+    "prompt": "What is the difference between a virus and a bacterium?",
+    "task_type": "factual",
+    "subcategory": "biology",
+    "complexity_level": 2,
+    "reference_answer": "Viruses are non-living, require host cells; bacteria are single-celled living organisms"
+  },
+  {
+    "prompt_id": "fact_13",
+    "prompt": "What are the primary greenhouse gases?",
+    "task_type": "factual",
+    "subcategory": "environment",
+    "complexity_level": 2,
+    "reference_answer": "CO2, methane, nitrous oxide, water vapor"
+  },
+  {
+    "prompt_id": "fact_14",
+    "prompt": "Who developed the periodic table?",
+    "task_type": "factual",
+    "subcategory": "chemistry",
+    "complexity_level": 2,
+    "reference_answer": "Dmitri Mendeleev"
+  },
+  {
+    "prompt_id": "fact_15",
+    "prompt": "Explain the difference between DNA replication and transcription.",
+    "task_type": "factual",
+    "subcategory": "biology",
+    "complexity_level": 3,
+    "reference_answer": "Replication copies entire DNA for cell division; transcription copies specific genes into RNA"
+  },
+  {
+    "prompt_id": "fact_16",
+    "prompt": "What is the Heisenberg Uncertainty Principle and its significance?",
+    "task_type": "factual",
+    "subcategory": "physics",
+    "complexity_level": 3,
+    "reference_answer": "Cannot simultaneously know exact position and momentum of a particle; fundamental quantum limit"
+  },
+  {
+    "prompt_id": "fact_17",
+    "prompt": "Describe the CRISPR-Cas9 mechanism for gene editing.",
+    "task_type": "factual",
+    "subcategory": "biology",
+    "complexity_level": 3,
+    "reference_answer": "Guide RNA targets DNA sequence; Cas9 nuclease cuts DNA at target; cell repair mechanisms enable editing"
+  },
+  {
+    "prompt_id": "fact_18",
+    "prompt": "What causes the seasons on Earth?",
+    "task_type": "factual",
+    "subcategory": "astronomy",
+    "complexity_level": 3,
+    "reference_answer": "Axial tilt (23.5\u00b0) causes varying solar angle and day length throughout orbit"
+  },
+  {
+    "prompt_id": "fact_19",
+    "prompt": "How do mRNA vaccines work at the molecular level?",
+    "task_type": "factual",
+    "subcategory": "medicine",
+    "complexity_level": 3,
+    "reference_answer": "mRNA encodes spike protein; cells produce protein; immune system recognizes and builds immunity"
+  },
+  {
+    "prompt_id": "fact_20",
+    "prompt": "What is the difference between Type 1 and Type 2 diabetes?",
+    "task_type": "factual",
+    "subcategory": "medicine",
+    "complexity_level": 3,
+    "reference_answer": "Type 1: autoimmune destruction of beta cells; Type 2: insulin resistance and relative deficiency"
+  },
+  {
+    "prompt_id": "fact_21",
+    "prompt": "Given a mutation in DNA polymerase proofreading domain, explain the expected effects on replication fidelity and mutation spectrum.",
+    "task_type": "factual",
+    "subcategory": "biology",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "fact_22",
+    "prompt": "How does the Higgs mechanism give mass to elementary particles in the Standard Model?",
+    "task_type": "factual",
+    "subcategory": "physics",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "fact_23",
+    "prompt": "Explain the mechanism of action of immune checkpoint inhibitors in cancer immunotherapy.",
+    "task_type": "factual",
+    "subcategory": "medicine",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "fact_24",
+    "prompt": "Describe the molecular basis of antibiotic resistance via beta-lactamase production.",
+    "task_type": "factual",
+    "subcategory": "biology",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "ext_01",
+    "prompt": "Extract the company name and founding year: 'Google was founded in 1998 by Larry Page and Sergey Brin.'",
+    "task_type": "extraction",
+    "subcategory": "business",
+    "complexity_level": 1,
+    "reference_answer": "Company: Google, Founded: 1998"
+  },
+  {
+    "prompt_id": "ext_02",
+    "prompt": "From the text, identify the person and their role: 'Dr. Sarah Chen is the Chief Technology Officer at TechCorp.'",
+    "task_type": "extraction",
+    "subcategory": "business",
+    "complexity_level": 1,
+    "reference_answer": "Person: Dr. Sarah Chen, Role: Chief Technology Officer"
+  },
+  {
+    "prompt_id": "ext_03",
+    "prompt": "Extract the date and event: 'The conference will be held on March 15, 2024 in San Francisco.'",
+    "task_type": "extraction",
+    "subcategory": "events",
+    "complexity_level": 1,
+    "reference_answer": "Date: March 15, 2024, Event: Conference, Location: San Francisco"
+  },
+  {
+    "prompt_id": "ext_04",
+    "prompt": "Identify the product and price: 'The new iPhone 15 costs $799.'",
+    "task_type": "extraction",
+    "subcategory": "product",
+    "complexity_level": 1,
+    "reference_answer": "Product: iPhone 15, Price: $799"
+  },
+  {
+    "prompt_id": "ext_05",
+    "prompt": "From this sentence, extract the country and capital: 'Paris is the capital city of France.'",
+    "task_type": "extraction",
+    "subcategory": "geography",
+    "complexity_level": 1,
+    "reference_answer": "Country: France, Capital: Paris"
+  },
+  {
+    "prompt_id": "ext_06",
+    "prompt": "Extract the medical condition and treatment: 'The patient was diagnosed with hypertension and prescribed lisinopril.'",
+    "task_type": "extraction",
+    "subcategory": "medical",
+    "complexity_level": 1,
+    "reference_answer": "Condition: hypertension, Treatment: lisinopril"
+  },
+  {
+    "prompt_id": "ext_07",
+    "prompt": "From the paragraph, extract all person names, their titles, and organizations: 'John Smith, VP of Engineering at Acme Corp, and Jane Doe, CTO at Beta Inc, announced the merger.'",
+    "task_type": "extraction",
+    "subcategory": "business",
+    "complexity_level": 2,
+    "reference_answer": "Persons: John Smith (VP of Engineering, Acme Corp), Jane Doe (CTO, Beta Inc)"
+  },
+  {
+    "prompt_id": "ext_08",
+    "prompt": "Extract the symptoms, diagnosis, and medications: 'Patient presents with fever, cough, and shortness of breath. Diagnosed with COVID-19. Prescribed Paxlovid and acetaminophen.'",
+    "task_type": "extraction",
+    "subcategory": "medical",
+    "complexity_level": 2,
+    "reference_answer": "Symptoms: fever, cough, shortness of breath; Diagnosis: COVID-19; Medications: Paxlovid, acetaminophen"
+  },
+  {
+    "prompt_id": "ext_09",
+    "prompt": "Identify the financial metrics: 'Q3 revenue was $2.4B, up 15% YoY. Net income reached $400M with EPS of $1.20.'",
+    "task_type": "extraction",
+    "subcategory": "finance",
+    "complexity_level": 2,
+    "reference_answer": "Revenue: $2.4B (+15% YoY), Net Income: $400M, EPS: $1.20"
+  },
+  {
+    "prompt_id": "ext_10",
+    "prompt": "Extract the technical specifications: 'The server has 64GB RAM, 2TB NVMe SSD, AMD EPYC 7742 CPU, and runs Ubuntu 22.04.'",
+    "task_type": "extraction",
+    "subcategory": "technical",
+    "complexity_level": 2,
+    "reference_answer": "RAM: 64GB, Storage: 2TB NVMe SSD, CPU: AMD EPYC 7742, OS: Ubuntu 22.04"
+  },
+  {
+    "prompt_id": "ext_11",
+    "prompt": "From the legal text, extract the parties, effective date, and termination clause: 'This Agreement between Alpha Ltd and Beta Corp, effective January 1, 2024, may be terminated by either party with 30 days written notice.'",
+    "task_type": "extraction",
+    "subcategory": "legal",
+    "complexity_level": 2,
+    "reference_answer": "Parties: Alpha Ltd, Beta Corp; Effective: January 1, 2024; Termination: 30 days written notice"
+  },
+  {
+    "prompt_id": "ext_12",
+    "prompt": "Extract the algorithm, time complexity, and space complexity: 'We use merge sort with O(n log n) time and O(n) space complexity.'",
+    "task_type": "extraction",
+    "subcategory": "technical",
+    "complexity_level": 2,
+    "reference_answer": "Algorithm: merge sort, Time: O(n log n), Space: O(n)"
+  },
+  {
+    "prompt_id": "ext_13",
+    "prompt": "From the research abstract, extract: hypothesis, methodology, sample size, key findings, and conclusion. 'We hypothesized that sleep deprivation impairs working memory. Using a within-subjects design with 40 participants...'",
+    "task_type": "extraction",
+    "subcategory": "scientific",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "ext_14",
+    "prompt": "Parse the JSON configuration and extract: database host, port, username, and SSL setting. '{\"db\": {\"host\": \"prod-db-1\", \"port\": 5432, \"user\": \"app_user\", \"ssl\": true}}'",
+    "task_type": "extraction",
+    "subcategory": "technical",
+    "complexity_level": 3,
+    "reference_answer": "Host: prod-db-1, Port: 5432, User: app_user, SSL: true"
+  },
+  {
+    "prompt_id": "ext_15",
+    "prompt": "Extract all entities and relationships: 'Apple acquired Beats Electronics for $3 billion in 2014. Dr. Dre and Jimmy Iovine founded Beats in 2006.'",
+    "task_type": "extraction",
+    "subcategory": "business",
+    "complexity_level": 3,
+    "reference_answer": "Entities: Apple (acquirer), Beats Electronics (target), Dr. Dre (founder), Jimmy Iovine (founder); Relations: Apple acquired Beats ($3B, 2014), Dr. Dre founded Beats (2006), Jimmy Iovine founded Beats (2006)"
+  },
+  {
+    "prompt_id": "ext_16",
+    "prompt": "From the error log, extract: timestamp, error code, component, and root cause. '[2024-01-15 14:32:11] ERROR [PaymentService] ERR_TIMEOUT: Database connection pool exhausted after 30s'",
+    "task_type": "extraction",
+    "subcategory": "technical",
+    "complexity_level": 3,
+    "reference_answer": "Timestamp: 2024-01-15 14:32:11, Error: ERR_TIMEOUT, Component: PaymentService, Cause: Database connection pool exhausted"
+  },
+  {
+    "prompt_id": "ext_17",
+    "prompt": "From the clinical trial report, extract: study design, inclusion/exclusion criteria, primary endpoint, statistical method, p-value, and adverse events. 'A randomized, double-blind, placebo-controlled Phase 3 trial enrolled 1,200 patients...'",
+    "task_type": "extraction",
+    "subcategory": "medical",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "ext_18",
+    "prompt": "Parse the Kubernetes YAML and extract: all container images, resource limits, environment variables, and volume mounts across all pods.",
+    "task_type": "extraction",
+    "subcategory": "technical",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "ext_19",
+    "prompt": "From the financial statement, extract: all line items for revenue, COGS, operating expenses, and calculate gross margin and operating margin.",
+    "task_type": "extraction",
+    "subcategory": "finance",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "ext_20",
+    "prompt": "Extract the complete dependency graph from the package.json including transitive dependencies, versions, and license types.",
+    "task_type": "extraction",
+    "subcategory": "technical",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_01",
+    "prompt": "Explain the difference between a laptop and a desktop computer.",
+    "task_type": "explanation",
+    "subcategory": "technology",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_02",
+    "prompt": "What is the difference between WiFi and Ethernet?",
+    "task_type": "explanation",
+    "subcategory": "networking",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_03",
+    "prompt": "Explain what a browser does.",
+    "task_type": "explanation",
+    "subcategory": "technology",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_04",
+    "prompt": "What is the difference between HTTP and HTTPS?",
+    "task_type": "explanation",
+    "subcategory": "networking",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_05",
+    "prompt": "Explain what an operating system does.",
+    "task_type": "explanation",
+    "subcategory": "software",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_06",
+    "prompt": "What is the difference between RAM and storage?",
+    "task_type": "explanation",
+    "subcategory": "hardware",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_07",
+    "prompt": "Explain the difference between a compiler and an interpreter with examples.",
+    "task_type": "explanation",
+    "subcategory": "programming",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_08",
+    "prompt": "How does public-key cryptography work? Explain with a simple analogy.",
+    "task_type": "explanation",
+    "subcategory": "security",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_09",
+    "prompt": "What are the key differences between SQL and NoSQL databases?",
+    "task_type": "explanation",
+    "subcategory": "databases",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_10",
+    "prompt": "Explain how Docker containers differ from virtual machines.",
+    "task_type": "explanation",
+    "subcategory": "devops",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_11",
+    "prompt": "How does a CPU cache improve performance?",
+    "task_type": "explanation",
+    "subcategory": "hardware",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_12",
+    "prompt": "What is REST API and how does it differ from GraphQL?",
+    "task_type": "explanation",
+    "subcategory": "web",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_13",
+    "prompt": "Explain how garbage collection works in modern programming languages like Java or Go.",
+    "task_type": "explanation",
+    "subcategory": "programming",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_14",
+    "prompt": "How does the TLS handshake establish a secure connection?",
+    "task_type": "explanation",
+    "subcategory": "security",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_15",
+    "prompt": "Explain the CAP theorem and its implications for distributed systems design.",
+    "task_type": "explanation",
+    "subcategory": "distributed_systems",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_16",
+    "prompt": "How does a database query optimizer choose an execution plan?",
+    "task_type": "explanation",
+    "subcategory": "databases",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_17",
+    "prompt": "Explain how branch prediction works in modern CPUs.",
+    "task_type": "explanation",
+    "subcategory": "hardware",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_18",
+    "prompt": "How does consistent hashing enable distributed caching?",
+    "task_type": "explanation",
+    "subcategory": "distributed_systems",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_19",
+    "prompt": "Explain the implementation challenges of a lock-free concurrent hash map with linearizable operations.",
+    "task_type": "explanation",
+    "subcategory": "concurrency",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_20",
+    "prompt": "How does the Raft consensus algorithm handle leader election, log replication, and membership changes?",
+    "task_type": "explanation",
+    "subcategory": "distributed_systems",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_21",
+    "prompt": "Explain how a just-in-time compiler optimizes hot code paths including inline caching and speculative optimization.",
+    "task_type": "explanation",
+    "subcategory": "compilers",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "expl_22",
+    "prompt": "Describe how a modern database storage engine implements MVCC with snapshot isolation.",
+    "task_type": "explanation",
+    "subcategory": "databases",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "reas_01",
+    "prompt": "If all birds have feathers, and a robin is a bird, does a robin have feathers?",
+    "task_type": "reasoning",
+    "subcategory": "logic",
+    "complexity_level": 1,
+    "reference_answer": "Yes"
+  },
+  {
+    "prompt_id": "reas_02",
+    "prompt": "John is taller than Mary. Mary is taller than Sue. Who is tallest?",
+    "task_type": "reasoning",
+    "subcategory": "logic",
+    "complexity_level": 1,
+    "reference_answer": "John"
+  },
+  {
+    "prompt_id": "reas_03",
+    "prompt": "If it rains, the ground gets wet. The ground is wet. Did it rain?",
+    "task_type": "reasoning",
+    "subcategory": "logic",
+    "complexity_level": 1,
+    "reference_answer": "Not necessarily - other causes possible"
+  },
+  {
+    "prompt_id": "reas_04",
+    "prompt": "A rectangle has 4 sides. A square is a rectangle. How many sides does a square have?",
+    "task_type": "reasoning",
+    "subcategory": "geometry",
+    "complexity_level": 1,
+    "reference_answer": "4"
+  },
+  {
+    "prompt_id": "reas_05",
+    "prompt": "All mammals are warm-blooded. Whales are mammals. Are whales warm-blooded?",
+    "task_type": "reasoning",
+    "subcategory": "biology",
+    "complexity_level": 1,
+    "reference_answer": "Yes"
+  },
+  {
+    "prompt_id": "reas_06",
+    "prompt": "If some cats are black, and some black things are dogs, can we conclude some cats are dogs?",
+    "task_type": "reasoning",
+    "subcategory": "logic",
+    "complexity_level": 1,
+    "reference_answer": "No"
+  },
+  {
+    "prompt_id": "reas_07",
+    "prompt": "A bat and a ball cost $1.10 total. The bat costs $1.00 more than the ball. How much is the ball?",
+    "task_type": "reasoning",
+    "subcategory": "math",
+    "complexity_level": 2,
+    "reference_answer": "$0.05"
+  },
+  {
+    "prompt_id": "reas_08",
+    "prompt": "In a room of 30 people, what's the probability at least two share a birthday?",
+    "task_type": "reasoning",
+    "subcategory": "probability",
+    "complexity_level": 2,
+    "reference_answer": "~70.6%"
+  },
+  {
+    "prompt_id": "reas_09",
+    "prompt": "You have 3 boxes labeled 'Apples', 'Oranges', 'Mixed'. All labels are wrong. You can pick one fruit from one box. How do you correctly relabel all?",
+    "task_type": "reasoning",
+    "subcategory": "logic",
+    "complexity_level": 2,
+    "reference_answer": "Pick from 'Mixed' box"
+  },
+  {
+    "prompt_id": "reas_10",
+    "prompt": "If it takes 5 machines 5 minutes to make 5 widgets, how long for 100 machines to make 100 widgets?",
+    "task_type": "reasoning",
+    "subcategory": "math",
+    "complexity_level": 2,
+    "reference_answer": "5 minutes"
+  },
+  {
+    "prompt_id": "reas_11",
+    "prompt": "Some A are B. All B are C. Can we conclude some A are C?",
+    "task_type": "reasoning",
+    "subcategory": "logic",
+    "complexity_level": 2,
+    "reference_answer": "Yes"
+  },
+  {
+    "prompt_id": "reas_12",
+    "prompt": "A train leaves at 60mph. Another leaves 1 hour later at 80mph from same station. When does second catch first?",
+    "task_type": "reasoning",
+    "subcategory": "math",
+    "complexity_level": 2,
+    "reference_answer": "4 hours after second leaves (300 miles)"
+  },
+  {
+    "prompt_id": "reas_13",
+    "prompt": "You have 12 coins, one is counterfeit (heavier or lighter). Using a balance scale 3 times, find the counterfeit and whether it's heavier or lighter.",
+    "task_type": "reasoning",
+    "subcategory": "logic",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "reas_14",
+    "prompt": "Prove that the square root of 2 is irrational.",
+    "task_type": "reasoning",
+    "subcategory": "math",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "reas_15",
+    "prompt": "In the Monty Hall problem with 3 doors, should you switch after the host reveals a goat? Explain why.",
+    "task_type": "reasoning",
+    "subcategory": "probability",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "reas_16",
+    "prompt": "If all Bloops are Razzies, and all Razzies are Lazzies, are all Bloops definitely Lazzies? What about some Lazzies being Bloops?",
+    "task_type": "reasoning",
+    "subcategory": "logic",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "reas_17",
+    "prompt": "A farmer has a wolf, goat, and cabbage. Boat holds farmer + one item. Wolf eats goat if alone. Goat eats cabbage if alone. Cross river safely.",
+    "task_type": "reasoning",
+    "subcategory": "logic",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "reas_18",
+    "prompt": "Two envelopes contain money, one has twice the other. You pick one, see $X. Should you switch? Explain the paradox.",
+    "task_type": "reasoning",
+    "subcategory": "probability",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "reas_19",
+    "prompt": "In the 100 prisoners problem, each prisoner can open 50 of 100 boxes to find their number. What strategy gives ~30% survival probability for all?",
+    "task_type": "reasoning",
+    "subcategory": "probability",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "reas_20",
+    "prompt": "Prove that there are infinitely many prime numbers using Euclid's method, then explain why the same proof doesn't work for twin primes.",
+    "task_type": "reasoning",
+    "subcategory": "math",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "reas_21",
+    "prompt": "In the blue-eyed islanders puzzle with 100 blue-eyed and 100 brown-eyed people, what happens after the guru says 'I see someone with blue eyes'?",
+    "task_type": "reasoning",
+    "subcategory": "logic",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "reas_22",
+    "prompt": "Explain the two-envelope paradox and why the expected value calculation is flawed. Relate to Bayesian reasoning.",
+    "task_type": "reasoning",
+    "subcategory": "probability",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_01",
+    "prompt": "Write a Python function to reverse a string.",
+    "task_type": "coding",
+    "subcategory": "string",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_02",
+    "prompt": "Write a Python function that checks if a number is even.",
+    "task_type": "coding",
+    "subcategory": "basic",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_03",
+    "prompt": "Write a Python function to find the maximum of three numbers.",
+    "task_type": "coding",
+    "subcategory": "basic",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_04",
+    "prompt": "Write a Python function that counts vowels in a string.",
+    "task_type": "coding",
+    "subcategory": "string",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_05",
+    "prompt": "Write a Python function to calculate the area of a circle given radius.",
+    "task_type": "coding",
+    "subcategory": "math",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_06",
+    "prompt": "Write a Python function that returns the first n Fibonacci numbers.",
+    "task_type": "coding",
+    "subcategory": "algorithm",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_07",
+    "prompt": "Write a Python function to check if a string is a palindrome.",
+    "task_type": "coding",
+    "subcategory": "string",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_08",
+    "prompt": "Implement binary search for a sorted list in Python.",
+    "task_type": "coding",
+    "subcategory": "algorithm",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_09",
+    "prompt": "Write a Python function to merge two sorted lists into one sorted list.",
+    "task_type": "coding",
+    "subcategory": "algorithm",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_10",
+    "prompt": "Create a Python class for a stack with push, pop, and peek methods.",
+    "task_type": "coding",
+    "subcategory": "data_structure",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_11",
+    "prompt": "Write a Python decorator that measures function execution time.",
+    "task_type": "coding",
+    "subcategory": "decorator",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_12",
+    "prompt": "Implement a function to find all prime numbers up to n using Sieve of Eratosthenes.",
+    "task_type": "coding",
+    "subcategory": "algorithm",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_13",
+    "prompt": "Write a Python function to flatten a nested list.",
+    "task_type": "coding",
+    "subcategory": "data_structure",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_14",
+    "prompt": "Create a context manager for timing code blocks.",
+    "task_type": "coding",
+    "subcategory": "context_manager",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_15",
+    "prompt": "Implement a thread-safe LRU cache in Python with get and put operations.",
+    "task_type": "coding",
+    "subcategory": "concurrency",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_16",
+    "prompt": "Write a Python function to find the longest common subsequence of two strings.",
+    "task_type": "coding",
+    "subcategory": "dp",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_17",
+    "prompt": "Implement a simple HTTP server in Python that handles GET and POST requests.",
+    "task_type": "coding",
+    "subcategory": "networking",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_18",
+    "prompt": "Create a Python class for a binary search tree with insert, delete, and search.",
+    "task_type": "coding",
+    "subcategory": "data_structure",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_19",
+    "prompt": "Write a Python function to detect a cycle in a linked list.",
+    "task_type": "coding",
+    "subcategory": "data_structure",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_20",
+    "prompt": "Implement a rate limiter using the token bucket algorithm.",
+    "task_type": "coding",
+    "subcategory": "algorithm",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_21",
+    "prompt": "Write a function to serialize and deserialize a binary tree.",
+    "task_type": "coding",
+    "subcategory": "data_structure",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_22",
+    "prompt": "Implement a lock-free concurrent queue in Python using only atomic operations.",
+    "task_type": "coding",
+    "subcategory": "concurrency",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_23",
+    "prompt": "Write a Python parser for a simple expression language with variables, functions, and operator precedence.",
+    "task_type": "coding",
+    "subcategory": "parser",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_24",
+    "prompt": "Create a distributed key-value store with consistent hashing, replication, and failure detection.",
+    "task_type": "coding",
+    "subcategory": "distributed_systems",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_25",
+    "prompt": "Implement a B+ tree index with insertion, deletion, and range queries.",
+    "task_type": "coding",
+    "subcategory": "database",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "code_26",
+    "prompt": "Write a Python JIT compiler for a subset of Python using LLVM.",
+    "task_type": "coding",
+    "subcategory": "compiler",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_01",
+    "prompt": "Summarize the plot of Cinderella in 2 sentences.",
+    "task_type": "summarization",
+    "subcategory": "fiction",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_02",
+    "prompt": "In 3 sentences, summarize what photosynthesis is.",
+    "task_type": "summarization",
+    "subcategory": "biology",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_03",
+    "prompt": "Summarize the main causes of World War I in 2 sentences.",
+    "task_type": "summarization",
+    "subcategory": "history",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_04",
+    "prompt": "In one sentence, explain what gravity is.",
+    "task_type": "summarization",
+    "subcategory": "physics",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_05",
+    "prompt": "Summarize the water cycle in 3 sentences.",
+    "task_type": "summarization",
+    "subcategory": "earth_science",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_06",
+    "prompt": "In 2 sentences, describe how a bill becomes a law in the US.",
+    "task_type": "summarization",
+    "subcategory": "civics",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_07",
+    "prompt": "Summarize the key arguments for and against universal basic income in 4 sentences.",
+    "task_type": "summarization",
+    "subcategory": "economics",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_08",
+    "prompt": "Provide a concise summary of how CRISPR gene editing works and its applications.",
+    "task_type": "summarization",
+    "subcategory": "biology",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_09",
+    "prompt": "Summarize the difference between supervised and unsupervised machine learning in 3 sentences.",
+    "task_type": "summarization",
+    "subcategory": "ml",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_10",
+    "prompt": "In 4 sentences, explain the causes and effects of the 2008 financial crisis.",
+    "task_type": "summarization",
+    "subcategory": "economics",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_11",
+    "prompt": "Summarize how blockchain achieves consensus without a central authority.",
+    "task_type": "summarization",
+    "subcategory": "technology",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_12",
+    "prompt": "In 3 sentences, describe the greenhouse effect and its role in climate change.",
+    "task_type": "summarization",
+    "subcategory": "environment",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_13",
+    "prompt": "Summarize the key findings of the paper 'Attention Is All You Need' (Transformer architecture) in 5 sentences.",
+    "task_type": "summarization",
+    "subcategory": "ml",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_14",
+    "prompt": "Provide a concise summary of the CAP theorem and its practical implications for database design.",
+    "task_type": "summarization",
+    "subcategory": "distributed_systems",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_15",
+    "prompt": "Summarize the molecular mechanism of mRNA vaccines and how they differ from traditional vaccines.",
+    "task_type": "summarization",
+    "subcategory": "medicine",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_16",
+    "prompt": "In 5 sentences, explain the proof-of-stake consensus mechanism and how it differs from proof-of-work.",
+    "task_type": "summarization",
+    "subcategory": "blockchain",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_17",
+    "prompt": "Summarize the causes, progression, and treatment of Alzheimer's disease.",
+    "task_type": "summarization",
+    "subcategory": "medicine",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_18",
+    "prompt": "Summarize how Kubernetes orchestrates containerized applications across a cluster.",
+    "task_type": "summarization",
+    "subcategory": "devops",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_19",
+    "prompt": "Summarize the mathematical foundations of zero-knowledge proofs and their application in ZK-rollups.",
+    "task_type": "summarization",
+    "subcategory": "cryptography",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_20",
+    "prompt": "Provide a concise summary of the mathematical proof of the Prime Number Theorem.",
+    "task_type": "summarization",
+    "subcategory": "math",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_21",
+    "prompt": "Summarize the key results and implications of the G\u00f6del incompleteness theorems.",
+    "task_type": "summarization",
+    "subcategory": "math",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sum_22",
+    "prompt": "Summarize the theoretical basis and practical implementation of differential privacy in machine learning.",
+    "task_type": "summarization",
+    "subcategory": "privacy",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_01",
+    "prompt": "What is Newton's first law of motion?",
+    "task_type": "scientific",
+    "subcategory": "physics",
+    "complexity_level": 1,
+    "reference_answer": "An object at rest stays at rest, and an object in motion stays in motion unless acted upon by an external force"
+  },
+  {
+    "prompt_id": "sci_02",
+    "prompt": "What are the three states of matter?",
+    "task_type": "scientific",
+    "subcategory": "physics",
+    "complexity_level": 1,
+    "reference_answer": "Solid, liquid, gas"
+  },
+  {
+    "prompt_id": "sci_03",
+    "prompt": "What is the function of mitochondria in a cell?",
+    "task_type": "scientific",
+    "subcategory": "biology",
+    "complexity_level": 1,
+    "reference_answer": "Produce ATP through cellular respiration"
+  },
+  {
+    "prompt_id": "sci_04",
+    "prompt": "What is the pH scale range?",
+    "task_type": "scientific",
+    "subcategory": "chemistry",
+    "complexity_level": 1,
+    "reference_answer": "0 to 14"
+  },
+  {
+    "prompt_id": "sci_05",
+    "prompt": "What is the speed of light in vacuum?",
+    "task_type": "scientific",
+    "subcategory": "physics",
+    "complexity_level": 1,
+    "reference_answer": "Approximately 299,792,458 m/s"
+  },
+  {
+    "prompt_id": "sci_06",
+    "prompt": "What is the chemical formula for water?",
+    "task_type": "scientific",
+    "subcategory": "chemistry",
+    "complexity_level": 1,
+    "reference_answer": "H2O"
+  },
+  {
+    "prompt_id": "sci_07",
+    "prompt": "Explain how a battery works using electrochemical principles.",
+    "task_type": "scientific",
+    "subcategory": "chemistry",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_08",
+    "prompt": "Describe the process of natural selection and how it drives evolution.",
+    "task_type": "scientific",
+    "subcategory": "biology",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_09",
+    "prompt": "How does a semiconductor diode allow current in only one direction?",
+    "task_type": "scientific",
+    "subcategory": "physics",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_10",
+    "prompt": "Explain the greenhouse effect and its role in Earth's temperature regulation.",
+    "task_type": "scientific",
+    "subcategory": "earth_science",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_11",
+    "prompt": "Describe the structure of an atom and the location of protons, neutrons, and electrons.",
+    "task_type": "scientific",
+    "subcategory": "chemistry",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_12",
+    "prompt": "How do antibiotics target bacterial cells without harming human cells?",
+    "task_type": "scientific",
+    "subcategory": "biology",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_13",
+    "prompt": "Explain the mechanism of action of CRISPR-Cas9 for genome editing including guide RNA design and off-target effects.",
+    "task_type": "scientific",
+    "subcategory": "biology",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_14",
+    "prompt": "Describe the pathophysiology of Type 2 diabetes including insulin resistance and beta-cell dysfunction.",
+    "task_type": "scientific",
+    "subcategory": "medicine",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_15",
+    "prompt": "Explain how mRNA vaccines induce both humoral and cellular immunity.",
+    "task_type": "scientific",
+    "subcategory": "immunology",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_16",
+    "prompt": "Describe the quantum mechanical basis of the periodic table and chemical bonding.",
+    "task_type": "scientific",
+    "subcategory": "chemistry",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_17",
+    "prompt": "Explain the role of the hypothalamus-pituitary-adrenal axis in stress response.",
+    "task_type": "scientific",
+    "subcategory": "physiology",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_18",
+    "prompt": "How does the polymerase chain reaction (PCR) amplify DNA? Include the three steps and temperature cycling.",
+    "task_type": "scientific",
+    "subcategory": "biology",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_19",
+    "prompt": "Explain the molecular mechanism of DNA replication including initiation at origins, replication fork progression, and termination in eukaryotes.",
+    "task_type": "scientific",
+    "subcategory": "biology",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_20",
+    "prompt": "Describe the standard model of particle physics including quarks, leptons, gauge bosons, and the Higgs mechanism.",
+    "task_type": "scientific",
+    "subcategory": "physics",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_21",
+    "prompt": "Explain the mechanism of action of immune checkpoint inhibitors (anti-PD-1/PD-L1, anti-CTLA-4) in cancer immunotherapy.",
+    "task_type": "scientific",
+    "subcategory": "immunology",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_22",
+    "prompt": "Describe the pathophysiology of Alzheimer's disease including amyloid hypothesis, tau pathology, and neuroinflammation.",
+    "task_type": "scientific",
+    "subcategory": "neuroscience",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_23",
+    "prompt": "How does the ribosome decode mRNA during translation? Include initiation, elongation, termination, and quality control mechanisms.",
+    "task_type": "scientific",
+    "subcategory": "biology",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "sci_24",
+    "prompt": "Describe the mechanism of ATP synthesis by ATP synthase including the binding change mechanism and proton motive force.",
+    "task_type": "scientific",
+    "subcategory": "biochemistry",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_01",
+    "prompt": "Write a haiku about a computer.",
+    "task_type": "creative",
+    "subcategory": "poetry",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_02",
+    "prompt": "Write a limerick about a programmer.",
+    "task_type": "creative",
+    "subcategory": "poetry",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_03",
+    "prompt": "Write a 2-sentence description of a robot learning to paint.",
+    "task_type": "creative",
+    "subcategory": "fiction",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_04",
+    "prompt": "Write a short poem (4 lines) about the internet.",
+    "task_type": "creative",
+    "subcategory": "poetry",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_05",
+    "prompt": "Describe a futuristic city in exactly 3 sentences.",
+    "task_type": "creative",
+    "subcategory": "fiction",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_06",
+    "prompt": "Write a haiku about debugging code.",
+    "task_type": "creative",
+    "subcategory": "poetry",
+    "complexity_level": 1,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_07",
+    "prompt": "Write a short story (100 words) about an AI that discovers it can dream.",
+    "task_type": "creative",
+    "subcategory": "fiction",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_08",
+    "prompt": "Compose a sonnet about a neural network training.",
+    "task_type": "creative",
+    "subcategory": "poetry",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_09",
+    "prompt": "Write a dialogue between a CPU and GPU arguing about who works harder.",
+    "task_type": "creative",
+    "subcategory": "dialogue",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_10",
+    "prompt": "Write a micro-fiction (exactly 50 words) about a world where emotions are traded as currency.",
+    "task_type": "creative",
+    "subcategory": "fiction",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_11",
+    "prompt": "Create a motivational speech from a compiler to source code.",
+    "task_type": "creative",
+    "subcategory": "speech",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_12",
+    "prompt": "Write a short story about a bug that becomes a feature.",
+    "task_type": "creative",
+    "subcategory": "fiction",
+    "complexity_level": 2,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_13",
+    "prompt": "Write a short story (200 words) about the last human on Earth conversing with an AI archive of human knowledge.",
+    "task_type": "creative",
+    "subcategory": "fiction",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_14",
+    "prompt": "Write a poem in free verse about the experience of a language model processing a prompt.",
+    "task_type": "creative",
+    "subcategory": "poetry",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_15",
+    "prompt": "Create a fable about a recursive function that learns to terminate its own base case.",
+    "task_type": "creative",
+    "subcategory": "fable",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_16",
+    "prompt": "Write a letter from a deprecated API to the developers who still use it.",
+    "task_type": "creative",
+    "subcategory": "letter",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_17",
+    "prompt": "Write a short story where the narrator is a hash function processing inputs.",
+    "task_type": "creative",
+    "subcategory": "fiction",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_18",
+    "prompt": "Compose a villanelle about the heat death of the universe from the perspective of a photon.",
+    "task_type": "creative",
+    "subcategory": "poetry",
+    "complexity_level": 3,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_19",
+    "prompt": "Write a structured narrative (500 words) with 3 interconnected storylines: a quantum physicist, an AI researcher, and a philosopher, all grappling with the measurement problem.",
+    "task_type": "creative",
+    "subcategory": "fiction",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_20",
+    "prompt": "Create a choose-your-own-adventure style story in second person with at least 5 decision points, each leading to different outcomes about AI consciousness.",
+    "task_type": "creative",
+    "subcategory": "interactive",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_21",
+    "prompt": "Write a technical poem that explains how a transformer attention mechanism works, using metaphor but maintaining technical accuracy.",
+    "task_type": "creative",
+    "subcategory": "technical_poetry",
+    "complexity_level": 4,
+    "reference_answer": ""
+  },
+  {
+    "prompt_id": "creat_22",
+    "prompt": "Create a world-building document for a sci-fi setting where computation is the fundamental currency, including economic system, social hierarchy, and 3 key historical events.",
+    "task_type": "creative",
+    "subcategory": "worldbuilding",
+    "complexity_level": 4,
+    "reference_answer": ""
+  }
+]

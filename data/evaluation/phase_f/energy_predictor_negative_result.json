@@ -1,0 +1,151 @@
+{
+  "phase": "F.1",
+  "audit_date": "2026-09-26",
+  "audit_status": "FAIL",
+  "summary": "Phase F.1 Energy Predictor audit revealed critical methodological issues. The 100% directional accuracy is an artifact of the B2 dataset composition, not model quality. Critical leakage found in feature engineering (task_type). Dataset lacks variation in target sign. Static baseline MAE recalculated to 0.012134 Wh. Do not proceed to Phase F.2.",
+  "audit_findings": {
+    "target_construction": {
+      "energy_difference": "INT4_energy_Wh - FP16_energy_Wh",
+      "verified": true,
+      "notes": "Correctly implemented in train_energy_predictor.py:139"
+    },
+    "feature_leakage": {
+      "task_type_feature": {
+        "status": "CRITICAL_LEAKAGE",
+        "description": "task_type is dataset-generation metadata, not available at inference time for new prompts",
+        "location": "train_energy_predictor.py:121",
+        "impact": "Model cannot be deployed as-is; feature unavailable at inference time for new prompts"
+      },
+      "other_features": {
+        "fp16_energy": "No leakage",
+        "int4_energy": "No leakage",
+        "b2_safe_label": "No leakage",
+        "phase_f_data": "No leakage",
+        "post_hoc_measurements": "No leakage"
+      }
+    },
+    "b2_dataset_composition": {
+      "total_complete_samples": 182,
+      "energy_difference_sign": {
+        "INT4_less_than_FP16": 182,
+        "INT4_greater_than_FP16": 0,
+        "INT4_equal_FP16": 0
+      },
+      "energy_difference_stats": {
+        "mean_Wh": -0.011634,
+        "median_Wh": -0.012126,
+        "std_Wh": 0.004116,
+        "min_Wh": -0.024976,
+        "max_Wh": -0.001265
+      },
+      "by_task_type": {
+        "coding": {"n": 26, "mean_Wh": -0.014489, "median_Wh": -0.013927, "std_Wh": 0.003341},
+        "creative": {"n": 22, "mean_Wh": -0.012897, "median_Wh": -0.012486, "std_Wh": 0.002829},
+        "explanation": {"n": 22, "mean_Wh": -0.012823, "median_Wh": -0.012894, "std_Wh": 0.002426},
+        "extraction": {"n": 20, "mean_Wh": -0.007271, "median_Wh": -0.007059, "std_Wh": 0.003177},
+        "factual": {"n": 24, "mean_Wh": -0.005278, "median_Wh": -0.005244, "std_Wh": 0.002251},
+        "reasoning": {"n": 22, "mean_Wh": -0.013240, "median_Wh": -0.012570, "std_Wh": 0.002108},
+        "scientific": {"n": 24, "mean_Wh": -0.012510, "median_Wh": -0.012678, "std_Wh": 0.002015},
+        "summarization": {"n": 22, "mean_Wh": -0.014144, "median_Wh": -0.013852, "std_Wh": 0.002396}
+      },
+      "by_complexity_level": {
+        "L1": {"n": 50, "mean_Wh": -0.010904, "median_Wh": -0.011964, "std_Wh": 0.004533},
+        "L2": {"n": 50, "mean_Wh": -0.011358, "median_Wh": -0.011849, "std_Wh": 0.004485},
+        "L3": {"n": 47, "mean_Wh": -0.012333, "median_Wh": -0.012959, "std_Wh": 0.003836},
+        "L4": {"n": 35, "mean_Wh": -0.012130, "median_Wh": -0.012476, "std_Wh": 0.002909}
+      }
+    },
+    "phase05_static_baseline": {
+      "fp16_energy_Wh": 0.0488,
+      "int4_energy_Wh": 0.0493,
+      "static_difference_Wh": 0.0005,
+      "phase05_paired_differences": {
+        "factual": 0.000520,
+        "scientific": 0.000456,
+        "explanation": -0.001810,
+        "summarization": 0.001175,
+        "coding": 0.001019,
+        "reasoning": 0.002015
+      },
+      "baseline_mae_full_dataset_Wh": 0.012134,
+      "baseline_directional_accuracy": 0.0,
+      "notes": "Previous report incorrectly stated baseline MAE as 0.0119 Wh"
+    },
+    "test_set_37_samples": {
+      "all_negative": true,
+      "range_Wh": [-0.018507, -0.003287],
+      "mean_Wh": -0.011438,
+      "median_Wh": -0.011782,
+      "directional_accuracy_artifact": true,
+      "note": "100% directional accuracy is artifact of test set composition (all INT4 < FP16)"
+    },
+    "leakage_issues": {
+      "task_type_feature": {
+        "severity": "CRITICAL",
+        "description": "task_type is dataset-generation metadata, unavailable at inference time for new prompts",
+        "location": "train_energy_predictor.py:121",
+        "recommendation": "Remove or implement runtime task classification"
+      },
+      "debug_statements": {
+        "severity": "MEDIUM",
+        "description": "DEBUG print statements remain in production training code",
+        "location": "train_energy_predictor.py:119-128"
+      }
+    }
+  },
+  "corrected_baseline_metrics": {
+    "baseline_mae_Wh": 0.012134,
+    "baseline_directional_accuracy": 0.0,
+    "baseline_r2": -8.46,
+    "note": "Previous report incorrectly stated baseline MAE as 0.0119 Wh"
+  },
+  "f1_predictor_metrics": {
+    "test_set_size": 37,
+    "mae_Wh": 0.001932,
+    "rmse_Wh": 0.002658,
+    "r2": 0.581,
+    "directional_accuracy": 1.0,
+    "within_10_pct": 0.3784,
+    "note": "100% directional accuracy is artifact of test set composition (all 37 samples have INT4 < FP16)"
+  },
+  "phase05_baseline_recalculated": {
+    "mae_Wh": 0.012134,
+    "directional_accuracy": 0.0,
+    "r2": -8.46
+  },
+  "f1_predictor_metrics": {
+    "mae_Wh": 0.001932,
+    "rmse_Wh": 0.002658,
+    "r2": 0.581,
+    "directional_accuracy": 1.0,
+    "within_10_pct": 0.3784
+  },
+  "improvement_over_baseline": {
+    "mae_reduction_Wh": 0.010202,
+    "mae_reduction_pct": 84.1,
+    "rmse_reduction_Wh": 0.009967,
+    "r2_improvement": 9.04,
+    "directional_accuracy_improvement": 1.0
+  },
+  "success_criteria": {
+    "mae_threshold_Wh": 0.002,
+    "directional_accuracy_threshold": 0.7,
+    "mae_met": true,
+    "directional_accuracy_met": true,
+    "overall_success": true,
+    "note": "Success criteria met but metrics are misleading due to test set composition artifact"
+  },
+  "leakage_status": "CONFIRMED_CRITICAL",
+  "recommendation": "Do not proceed to Phase F.2. Remove task_type feature or implement runtime task classification. Retrain with mixed-sign dataset before claiming production readiness.",
+  "artifacts_preserved": [
+    "models/energy_predictor/energy_predictor.joblib",
+    "models/energy_predictor/feature_extractor.joblib",
+    "data/evaluation/phase_f/energy_predictor_results.json",
+    "data/evaluation/phase_f/energy_predictor_evaluation.json",
+    "data/evaluation/phase_f/energy_predictor_test_split.json",
+    "data/processed/b2_dataset.json",
+    "phase0_5_validation_results.json"
+  ],
+  "audit_date": "2026-09-26",
+  "audit_verdict": "FAIL"
+}

@@ -1,0 +1,63 @@
+{
+  "metrics": {
+    "mae": 0.001932396481691105,
+    "rmse": 0.002657589277844491,
+    "r2": 0.5809572652859185,
+    "directional_accuracy": 1.0,
+    "within_10_pct": 0.3783783783783784,
+    "confusion_matrix": {
+      "tn": 37,
+      "fp": 0,
+      "fn": 0,
+      "tp": 0
+    },
+    "sign_agreement": 1.0
+  },
+  "baseline_metrics": {
+    "mae": 0.011938459459459453,
+    "rmse": 0.01262463361523489,
+    "r2": -8.45627635447274,
+    "directional_accuracy": 0.0,
+    "within_10_pct": 0.0,
+    "confusion_matrix": {
+      "tn": 0,
+      "fp": 37,
+      "fn": 0,
+      "tp": 0
+    },
+    "sign_agreement": 0.0
+  },
+  "improvement": {
+    "mae": -0.010006062977768349,
+    "rmse": -0.0099670443373904,
+    "r2": 9.03723361975866,
+    "directional_accuracy": 1.0,
+    "within_10_pct": 0.3783783783783784,
+    "confusion_matrix": {
+      "tn": 37,
+      "fp": 0,
+      "fn": 0,
+      "tp": 0
+    },
+    "sign_agreement": 1.0
+  },
+  "success_criterion": {
+    "mae_threshold": 0.002,
+    "directional_accuracy_threshold": 0.7,
+    "mae_met": true,
+    "directional_accuracy_met": true,
+    "overall_success": true
+  },
+  "confusion_matrix": {
+    "tn": 37,
+    "fp": 0,
+    "fn": 0,
+    "tp": 0
+  },
+  "baseline_confusion": {
+    "tn": 0,
+    "fp": 37,
+    "fn": 0,
+    "tp": 0
+  }
+}

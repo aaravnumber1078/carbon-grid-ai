@@ -1,0 +1,1436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CarbonGrid — Carbon-aware inference for local LLMs</title>
+<meta name="description" content="CarbonGrid routes every prompt to FP16 or INT4 based on quantization risk, live grid carbon intensity and your latency budget.">
+<meta name="theme-color" content="#f8faf8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='2' width='9' height='9' rx='2' fill='%231b2420'/%3E%3Crect x='13' y='2' width='9' height='9' rx='2' fill='%231b2420' opacity='.3'/%3E%3Crect x='2' y='13' width='9' height='9' rx='2' fill='%231b2420' opacity='.3'/%3E%3Crect x='13' y='13' width='9' height='9' rx='4.5' fill='%2316805a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fragment+Mono&family=Host+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --paper:oklch(0.985 0.004 155);
+  --paper-2:oklch(0.966 0.006 155);
+  --surface:oklch(0.995 0.002 155);
+  --line:oklch(0.91 0.007 155);
+  --line-strong:oklch(0.85 0.009 155);
+  --ink:oklch(0.22 0.016 165);
+  --ink-hover:oklch(0.32 0.018 165);
+  --ink-2:oklch(0.42 0.014 165);
+  --ink-3:oklch(0.52 0.012 165);
+  --brand:oklch(0.52 0.12 158);
+  --brand-strong:oklch(0.42 0.1 160);
+  --brand-tint:oklch(0.95 0.035 158);
+  --fp:oklch(0.5 0.12 266);
+  --fp-tint:oklch(0.95 0.025 266);
+  --amber:oklch(0.72 0.14 70);
+  --amber-strong:oklch(0.5 0.11 65);
+  --amber-tint:oklch(0.96 0.045 85);
+  --red:oklch(0.57 0.17 27);
+  --red-tint:oklch(0.96 0.025 27);
+  --night:oklch(0.2 0.014 165);
+  --night-2:oklch(0.245 0.014 165);
+  --night-line:oklch(0.32 0.014 165);
+  --night-ink:oklch(0.95 0.006 155);
+  --night-ink-2:oklch(0.72 0.012 160);
+  --signal:oklch(0.86 0.15 148);
+  --signal-fp:oklch(0.8 0.09 266);
+
+  --sans:"Host Grotesk",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Fragment Mono",ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
+
+  --space-3xs:4px; --space-2xs:8px; --space-xs:12px; --space-sm:16px; --space-md:24px;
+  --space-lg:32px; --space-xl:48px; --space-2xl:64px; --space-3xl:96px;
+  --gutter:clamp(20px,4vw,40px);
+  --section:clamp(88px,11vw,152px);
+
+  --r-sm:6px; --r-md:10px; --r-lg:14px; --r-xl:18px;
+  --shadow-sm:0 1px 2px oklch(0.2 0.02 165 / .06);
+  --shadow-lg:0 1px 2px oklch(0.2 0.02 165 / .05),0 12px 32px -12px oklch(0.2 0.02 165 / .14),0 48px 96px -48px oklch(0.2 0.02 165 / .22);
+  --ease:cubic-bezier(.22,1,.36,1);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--paper);scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden;text-rendering:optimizeLegibility}
+h1,h2,h3,h4{margin:0;font-weight:500;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+code,kbd,pre{font-family:var(--mono)}
+::selection{background:var(--brand-tint);color:var(--ink)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:var(--r-sm)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono)}
+.container{width:100%;max-width:1200px;margin-inline:auto;padding-inline:var(--gutter)}
+section[id]{scroll-margin-top:72px}
+.skip{position:absolute;left:12px;top:-60px;z-index:60;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:var(--r-md);font-size:14px}
+.skip:focus{top:12px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2xs);height:44px;padding:0 20px;border:0;border-radius:var(--r-md);font:500 15px/1 var(--sans);letter-spacing:-.005em;cursor:pointer;white-space:nowrap;transition:background-color .2s var(--ease),box-shadow .2s var(--ease),color .2s var(--ease),transform .2s var(--ease)}
+.btn:active{transform:translateY(1px)}
+.btn-sm{height:36px;padding:0 14px;font-size:14px;border-radius:var(--r-sm)}
+.btn-primary{background:var(--ink);color:var(--paper);box-shadow:var(--shadow-sm)}
+.btn-primary:hover{background:var(--ink-hover)}
+.btn-primary[disabled]{cursor:progress;background:var(--ink-2)}
+.btn-secondary{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-strong),var(--shadow-sm)}
+.btn-secondary:hover{background:var(--paper-2)}
+.btn-light{background:var(--paper);color:var(--ink)}
+.btn-light:hover{background:oklch(0.93 0.006 155)}
+.btn-outline-dark{background:transparent;color:var(--night-ink);box-shadow:inset 0 0 0 1px var(--night-line)}
+.btn-outline-dark:hover{background:var(--night-2)}
+.btn .arrow{transition:transform .25s var(--ease)}
+.btn:hover .arrow,.link-arrow:hover .arrow{transform:translateX(3px)}
+.spin{width:14px;height:14px;border-radius:50%;border:1.5px solid currentColor;border-right-color:transparent;animation:spin .7s linear infinite;display:none}
+.btn.busy .spin{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.link-arrow{display:inline-flex;align-items:center;gap:6px;font-weight:500;color:var(--brand-strong)}
+.link-arrow:hover{color:var(--ink)}
+
+/* Status */
+.status{display:inline-flex;align-items:center;gap:var(--space-2xs);font-size:13px;color:var(--ink-2);white-space:nowrap}
+.status-dot{position:relative;width:7px;height:7px;border-radius:50%;background:var(--ink-3);flex:none}
+.status.live .status-dot{background:var(--brand)}
+.status.live .status-dot::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--brand);animation:ping 2s var(--ease) infinite}
+.status.down .status-dot{background:var(--amber)}
+@keyframes ping{from{transform:scale(.5);opacity:.9}to{transform:scale(1.8);opacity:0}}
+
+/* Nav */
+.nav{position:sticky;top:0;z-index:40;background:oklch(0.985 0.004 155 / .82);backdrop-filter:saturate(160%) blur(12px);-webkit-backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid transparent;transition:border-color .3s}
+.nav.scrolled{border-bottom-color:var(--line)}
+.nav-in{display:flex;align-items:center;gap:var(--space-xl);height:64px}
+.logo{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:17px;letter-spacing:-.02em;color:var(--ink)}
+.logo svg{width:22px;height:22px;flex:none}
+.nav-links{display:flex;gap:var(--space-lg);font-size:14.5px;color:var(--ink-2)}
+.nav-links a{transition:color .2s}
+.nav-links a:hover{color:var(--ink)}
+.nav-end{margin-left:auto;display:flex;align-items:center;gap:var(--space-md)}
+
+/* Hero */
+.hero{position:relative;padding-top:clamp(56px,9vw,120px);overflow:hidden}
+.hero-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:64px 64px;background-position:-1px -1px;-webkit-mask-image:radial-gradient(ellipse 70% 55% at 30% 0%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse 70% 55% at 30% 0%,#000 20%,transparent 75%);opacity:.7}
+.hero .container{position:relative}
+.hero-copy{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:var(--space-xl) var(--space-2xl);align-items:end}
+.announce{display:inline-flex;align-items:center;gap:10px;margin-bottom:var(--space-lg);padding:5px 12px 5px 5px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line),var(--shadow-sm);font-size:13.5px;color:var(--ink-2);max-width:100%;transition:box-shadow .2s}
+.announce:hover{box-shadow:inset 0 0 0 1px var(--line-strong),var(--shadow-sm);color:var(--ink)}
+.announce-tag{flex:none;font:500 12px/1 var(--sans);padding:5px 9px;border-radius:999px;background:var(--brand-tint);color:var(--brand-strong)}
+.announce span:nth-child(2){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hero h1{font-size:clamp(46px,7.2vw,96px);line-height:.96;letter-spacing:-.045em;font-weight:500;max-width:11ch}
+.lede{font-size:clamp(17px,1.5vw,19px);line-height:1.6;color:var(--ink-2);max-width:46ch}
+.hero-cta{display:flex;gap:var(--space-xs);flex-wrap:wrap;margin-top:var(--space-lg)}
+.hero-enter > *{animation:rise .9s var(--ease) both}
+.hero-enter > *:nth-child(2){animation-delay:.08s}
+.hero-enter > *:nth-child(3){animation-delay:.16s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* Decision stream */
+.stream{margin:clamp(56px,7vw,88px) 0 0;background:var(--night);color:var(--night-ink);border-radius:var(--r-xl);box-shadow:var(--shadow-lg),inset 0 0 0 1px var(--night-line);overflow:hidden;animation:rise 1s .24s var(--ease) both}
+.stream-head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);padding:14px 20px;border-bottom:1px solid var(--night-line);flex-wrap:wrap}
+.stream-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500}
+.stream-title .status-dot{background:var(--signal)}
+.stream-title .status-dot::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--signal);animation:ping 2s var(--ease) infinite}
+.stream-meta{font-size:12.5px;color:var(--night-ink-2)}
+.stream-body{display:grid;grid-template-columns:minmax(0,1fr) 260px}
+.stream-table{padding:6px 0 10px;min-width:0}
+.srow{display:grid;grid-template-columns:minmax(0,1fr) 64px 70px 190px 84px;gap:var(--space-sm);align-items:center;padding:0 20px;height:46px;font:400 13px/1 var(--mono);border-bottom:1px solid oklch(0.26 0.014 165)}
+.srow:last-child{border-bottom:0}
+.srow.shead{height:36px;font:500 12px/1 var(--sans);color:var(--night-ink-2);border-bottom-color:var(--night-line)}
+.srow > span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srow .c-prompt{font-family:var(--sans);font-size:14px;color:var(--night-ink)}
+.srow .c-dim{color:var(--night-ink-2)}
+.srow .c-num{text-align:right}
+.srow .c-route{display:flex;align-items:center;gap:10px}
+.srow .c-reason{color:var(--night-ink-2);font-family:var(--sans);font-size:12.5px;overflow:hidden;text-overflow:ellipsis}
+.srow.enter{animation:rowIn .6s var(--ease) both}
+@keyframes rowIn{from{opacity:0;transform:translateY(-8px);background:oklch(0.86 0.15 148 / .08)}to{opacity:1;transform:none;background:transparent}}
+.stream-side{border-left:1px solid var(--night-line);display:grid;align-content:start}
+.sstat{padding:20px 22px;border-bottom:1px solid var(--night-line);display:grid;gap:4px}
+.sstat:last-child{border-bottom:0}
+.sk{font-size:12.5px;color:var(--night-ink-2)}
+.sv{font:500 30px/1.1 var(--sans);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.su{font-size:12.5px;color:var(--night-ink-2)}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;border-radius:var(--r-sm);font:400 12px/1 var(--mono);letter-spacing:.02em;white-space:nowrap}
+.badge.int4{color:var(--brand-strong);background:var(--brand-tint)}
+.badge.fp16{color:var(--fp);background:var(--fp-tint)}
+.badge.ok{color:var(--brand-strong);background:var(--brand-tint)}
+.badge.warn{color:var(--amber-strong);background:var(--amber-tint)}
+.badge.bad{color:var(--red);background:var(--red-tint)}
+.badge.muted{color:var(--ink-2);background:var(--paper-2);box-shadow:inset 0 0 0 1px var(--line)}
+.badge::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.on-dark .badge.int4{color:var(--signal);background:oklch(0.86 0.15 148 / .12)}
+.on-dark .badge.fp16{color:var(--signal-fp);background:oklch(0.8 0.09 266 / .14)}
+.tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:var(--r-sm);font:400 11.5px/1 var(--mono);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line);background:var(--surface);white-space:nowrap}
+
+/* Proof strip */
+.proof{padding-block:clamp(56px,7vw,88px) 0}
+.facts-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;border-top:1px solid var(--line)}
+.facts-strip > div{display:flex;flex-direction:column-reverse;justify-content:flex-end;gap:var(--space-2xs);padding:var(--space-md) var(--space-md) 0 0}
+.facts-strip > div + div{padding-left:var(--space-md);border-left:1px solid var(--line)}
+.facts-strip dd{margin:0;font:500 clamp(34px,3.6vw,46px)/1 var(--sans);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.facts-strip dd small{font-size:.5em;letter-spacing:-.01em;color:var(--ink-3);margin-left:2px}
+.facts-strip dt{font-size:14px;line-height:1.5;color:var(--ink-2);max-width:24ch}
+.fineprint{margin-top:var(--space-lg);font-size:13px;line-height:1.6;color:var(--ink-3);max-width:80ch}
+.fineprint a{color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.fineprint a:hover{color:var(--ink);text-decoration-color:currentColor}
+.stack-row{display:flex;align-items:center;gap:var(--space-sm) var(--space-xl);flex-wrap:wrap;margin-top:clamp(48px,6vw,72px);padding-top:var(--space-md);border-top:1px solid var(--line)}
+.stack-row > span:first-child{font-size:13px;color:var(--ink-3)}
+.stack-row ul{display:flex;flex-wrap:wrap;gap:var(--space-xs) var(--space-xl);list-style:none;margin:0;padding:0}
+.stack-row li{font-size:15.5px;font-weight:600;letter-spacing:-.02em;color:var(--ink-2)}
+.stack-row li small{font:400 12px var(--mono);color:var(--ink-3);margin-left:6px;letter-spacing:0}
+
+/* Sections */
+.section{padding-block:var(--section)}
+.section-alt{background:var(--paper-2);border-block:1px solid var(--line)}
+.eyebrow{font:400 12.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--brand-strong);margin-bottom:var(--space-md)}
+.section h2{font-size:clamp(32px,4.2vw,54px);line-height:1.04;letter-spacing:-.038em}
+.section-lede{font-size:17px;line-height:1.65;color:var(--ink-2);max-width:52ch}
+.section-head{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:var(--space-lg) var(--space-2xl);align-items:end;margin-bottom:clamp(40px,5vw,64px)}
+.section-head h2{max-width:16ch}
+
+/* How it works */
+.split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-xl) clamp(48px,7vw,112px);align-items:start}
+.split-head{position:sticky;top:112px}
+.split-head h2{max-width:13ch;margin-bottom:var(--space-md)}
+.steps{list-style:none;margin:0;padding:0;counter-reset:step}
+.step{display:grid;grid-template-columns:56px minmax(0,1fr);gap:var(--space-sm);padding-block:var(--space-lg);border-top:1px solid var(--line)}
+.step:first-child{border-top-color:var(--ink)}
+.step-n{font:400 13px/1.9 var(--mono);color:var(--ink-3)}
+.step h3{font-size:22px;line-height:1.3;letter-spacing:-.02em;margin-bottom:var(--space-2xs)}
+.step p{color:var(--ink-2);max-width:56ch}
+.policy{display:inline-flex;margin-top:var(--space-sm);font-size:12.5px;padding:5px 9px;border-radius:var(--r-sm);background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink-2)}
+.policy b{font-weight:400;color:var(--brand-strong)}
+.guard{margin-top:var(--space-md);padding:var(--space-md);border-radius:var(--r-lg);background:var(--paper-2);box-shadow:inset 0 0 0 1px var(--line)}
+.guard h4{font-size:15px;font-weight:600;letter-spacing:-.01em;margin-bottom:var(--space-sm)}
+.guard ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:var(--space-sm) var(--space-md)}
+.guard li{font-size:14.5px;line-height:1.55;color:var(--ink-2);display:grid;grid-template-columns:16px minmax(0,1fr);gap:10px}
+.guard li svg,.ticks li svg{margin-top:4px;color:var(--brand)}
+
+/* Developers */
+.dev{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-xl) clamp(48px,6vw,96px);align-items:center}
+.dev h2{max-width:14ch;margin-bottom:var(--space-md)}
+.dev p code,.inline-code{font-size:.9em;padding:2px 6px;border-radius:5px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink)}
+.ticks{list-style:none;margin:var(--space-lg) 0;padding:0;display:grid;gap:var(--space-xs)}
+.ticks li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:12px;font-size:15px;color:var(--ink-2)}
+.code-window{background:var(--night);border-radius:var(--r-xl);box-shadow:var(--shadow-lg),inset 0 0 0 1px var(--night-line);overflow:hidden;min-width:0}
+.code-bar{display:flex;align-items:center;gap:4px;padding:8px 10px 0 14px;border-bottom:1px solid var(--night-line)}
+.code-tab{appearance:none;border:0;background:none;cursor:pointer;color:var(--night-ink-2);font-size:13px;padding:10px 10px 12px;position:relative;transition:color .2s}
+.code-tab:hover{color:var(--night-ink)}
+.code-tab[aria-selected="true"]{color:var(--night-ink)}
+.code-tab[aria-selected="true"]::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:1px;background:var(--signal)}
+.code-path{margin-left:auto;font:400 12px var(--mono);color:var(--night-ink-2);padding-right:6px}
+.copy{appearance:none;border:0;cursor:pointer;font:500 12.5px var(--sans);color:var(--night-ink-2);background:var(--night-2);border-radius:var(--r-sm);padding:6px 10px;margin-bottom:6px;transition:color .2s,background .2s}
+.copy:hover{color:var(--night-ink);background:var(--night-line)}
+.code{margin:0;padding:22px 24px 26px;font-size:13px;line-height:1.75;color:var(--night-ink);overflow:auto;tab-size:2;min-height:340px}
+.code .k{color:oklch(0.82 0.07 235)}
+.code .s{color:oklch(0.86 0.11 148)}
+.code .n{color:oklch(0.86 0.1 75)}
+.code .p{color:var(--night-ink-2)}
+
+/* Console app */
+.app{background:var(--surface);border-radius:var(--r-xl);box-shadow:var(--shadow-lg),inset 0 0 0 1px var(--line);overflow:hidden}
+.app-bar{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);padding:10px 12px 10px 10px;border-bottom:1px solid var(--line);background:var(--paper);flex-wrap:wrap}
+.seg{display:flex;gap:2px;padding:3px;border-radius:var(--r-md);background:var(--paper-2);box-shadow:inset 0 0 0 1px var(--line);overflow-x:auto;max-width:100%;scrollbar-width:none}
+.seg-btn{appearance:none;border:0;background:transparent;cursor:pointer;font:500 14px/1 var(--sans);color:var(--ink-2);padding:9px 14px;border-radius:7px;white-space:nowrap;transition:color .2s,background .2s,box-shadow .2s}
+.seg-btn:hover{color:var(--ink)}
+.seg-btn[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line),var(--shadow-sm)}
+.app-bar .status{padding-right:6px}
+.demo-note{display:flex;gap:10px;align-items:flex-start;padding:12px 20px;font-size:14px;color:var(--amber-strong);background:var(--amber-tint);border-bottom:1px solid oklch(0.88 0.06 85)}
+.demo-note[hidden]{display:none}
+.demo-note svg{flex:none;margin-top:3px}
+.demo-note code{font-size:13px}
+.view{display:none}
+.view.on{display:block;animation:fade .4s var(--ease) both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.pane{padding:var(--space-md);min-width:0}
+.pane-head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-xs);margin-bottom:var(--space-sm);min-height:24px;flex-wrap:wrap}
+.pane-head h3,.pane h3{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.hint{font-size:13px;color:var(--ink-3)}
+kbd{font-size:11.5px;padding:2px 6px;border-radius:5px;background:var(--paper-2);box-shadow:inset 0 -1px 0 var(--line-strong),inset 0 0 0 1px var(--line);color:var(--ink-2)}
+
+.run-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+.run-grid > .pane{border-bottom:1px solid var(--line)}
+.pane-compose,.pane-answer{border-right:1px solid var(--line)}
+.pane-metrics{padding:0}
+.pane-log{grid-column:1/-1;border-bottom:0!important}
+.pane-route{display:flex;flex-direction:column}
+.pane-route .circuit-scroll{flex:1;display:flex;align-items:center}
+
+label{display:block;font-size:13px;font-weight:500;color:var(--ink-2);margin-bottom:6px}
+textarea,select,input[type=number]{width:100%;background:var(--surface);color:var(--ink);border:0;box-shadow:inset 0 0 0 1px var(--line-strong);border-radius:var(--r-md);font:400 15px/1.55 var(--sans);padding:11px 13px;transition:box-shadow .2s}
+textarea{min-height:128px;resize:vertical;display:block}
+select{appearance:none;-webkit-appearance:none;padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555e59' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;cursor:pointer}
+textarea:hover,select:hover,input[type=number]:hover{box-shadow:inset 0 0 0 1px var(--ink-3)}
+textarea:focus,select:focus,input[type=number]:focus{outline:none;box-shadow:inset 0 0 0 1px var(--brand),0 0 0 3px oklch(0.52 0.12 158 / .15)}
+::placeholder{color:var(--ink-3)}
+.examples{display:flex;flex-wrap:wrap;gap:6px;margin-top:var(--space-xs)}
+.chip{appearance:none;border:0;cursor:pointer;font:400 13px/1.3 var(--sans);color:var(--ink-2);background:var(--paper-2);box-shadow:inset 0 0 0 1px var(--line);padding:6px 10px;border-radius:var(--r-sm);text-align:left;transition:color .2s,box-shadow .2s,background .2s}
+.chip:hover{color:var(--ink);background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-sm);margin-top:var(--space-md)}
+.fields .wide{grid-column:1/-1}
+.range-row{display:flex;align-items:center;gap:var(--space-sm);height:24px}
+.range-row output{font:400 13.5px var(--mono);min-width:5ch;text-align:right;color:var(--ink)}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--ink) var(--p,50%),var(--line-strong) var(--p,50%));cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--surface);box-shadow:0 0 0 1.5px var(--ink),0 2px 6px oklch(0.2 0.02 165 / .2);transition:transform .15s var(--ease)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radius:50%;background:var(--surface);box-shadow:0 0 0 1.5px var(--ink),0 2px 6px oklch(0.2 0.02 165 / .2)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.1)}
+.actions{display:flex;align-items:center;gap:var(--space-sm);margin-top:var(--space-md);flex-wrap:wrap}
+
+.circuit-scroll{overflow-x:auto;margin-inline:calc(var(--space-md) * -1);padding-inline:var(--space-md)}
+.circuit{display:block;width:100%;height:auto;min-width:520px;--route:var(--fp)}
+.circuit .base{fill:none;stroke:var(--line-strong);stroke-width:1.5}
+.circuit .lit{fill:none;stroke:var(--route);stroke-width:2.5;stroke-linecap:round}
+.circuit .node{fill:var(--surface);stroke:var(--line-strong);stroke-width:1.5;transition:stroke .3s}
+.circuit .node.pass{stroke:var(--route)}
+.circuit .node.fail{stroke:var(--red)}
+.circuit .node.busy{stroke:var(--amber)}
+.circuit .core{fill:var(--line-strong);transition:fill .3s}
+.circuit .pass + .core{fill:var(--route)}
+.circuit .fail + .core{fill:var(--red)}
+.circuit .busy + .core{fill:var(--amber)}
+.circuit text{font-family:var(--sans);font-size:12.5px;fill:var(--ink-2)}
+.circuit .val{font-family:var(--mono);font-size:11.5px;fill:var(--ink)}
+.circuit .term{fill:var(--surface);stroke:var(--line-strong);stroke-width:1.2;transition:fill .3s,stroke .3s}
+.circuit .term-t{font-family:var(--mono);font-size:14px;fill:var(--ink-2)}
+.circuit .term-s{font-size:11px;fill:var(--ink-3)}
+.circuit .on-full .term{stroke:var(--fp);fill:var(--fp-tint)}
+.circuit .on-full .term-t{fill:var(--fp)}
+.circuit .on-lean .term{stroke:var(--brand);fill:var(--brand-tint)}
+.circuit .on-lean .term-t{fill:var(--brand-strong)}
+.circuit .bypass-label{font-size:11px;fill:var(--ink-3)}
+.circuit #spark{fill:var(--route)}
+.pulse{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+.verdict{display:flex;gap:10px;align-items:flex-start;margin-top:var(--space-xs);padding-top:var(--space-sm);border-top:1px solid var(--line);font-size:15px;line-height:1.55;min-height:3.6em}
+.verdict svg{flex:none;margin-top:3px;color:var(--ink-3)}
+
+.answer{white-space:pre-wrap;font-size:15px;line-height:1.7;max-height:320px;overflow:auto;color:var(--ink)}
+.answer.empty{color:var(--ink-3)}
+.meta{display:flex;gap:var(--space-2xs);flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--ink-3)}
+.meta .mono{font-size:12px}
+
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);height:100%}
+.metric{background:var(--surface);padding:20px var(--space-md);display:grid;gap:10px;align-content:start;min-width:0}
+.mk{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:13px;color:var(--ink-2);flex-wrap:wrap}
+.mv{font:500 28px/1 var(--sans);letter-spacing:-.035em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mv small{font:400 13px var(--sans);letter-spacing:0;color:var(--ink-3);margin-left:4px}
+.meter{height:3px;border-radius:2px;background:var(--paper-2);overflow:hidden}
+.meter i{display:block;height:100%;width:100%;background:var(--ink);transform-origin:left;transform:scaleX(0);transition:transform .9s var(--ease)}
+.mnote{font-size:12px;color:var(--ink-3);line-height:1.4}
+
+.table-wrap{overflow-x:auto;margin-inline:calc(var(--space-md) * -1)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:12px var(--space-md);border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+th{font-weight:500;color:var(--ink-3);font-size:12.5px;padding-block:10px}
+tbody tr{transition:background .15s}
+tbody tr:hover{background:var(--paper)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+td.n{font-family:var(--mono);font-size:13px}
+td.p{max-width:360px;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+td.why{color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:0}
+.empty-state{color:var(--ink-3);padding:28px var(--space-md)!important;white-space:normal}
+
+/* Simulator */
+.sim-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+.sim-grid > .pane{padding:var(--space-lg) var(--space-md)}
+.sim-grid > .pane:first-child{border-right:1px solid var(--line)}
+.sim-grid .fields{margin-top:0;gap:var(--space-md)}
+.note{font-size:13.5px;line-height:1.6;color:var(--ink-3);max-width:68ch}
+.label-sm{font-size:12.5px;color:var(--ink-3);margin-bottom:var(--space-2xs)}
+.sim-decision{display:flex;align-items:baseline;gap:var(--space-md);flex-wrap:wrap}
+.sim-mode{font:500 64px/1 var(--sans);letter-spacing:-.05em;color:var(--fp);transition:color .3s}
+.sim-mode.int4{color:var(--brand)}
+.sim-reason{font-size:16px;line-height:1.55;max-width:42ch;flex:1;min-width:220px}
+.confirm{display:flex;align-items:center;gap:8px;margin-top:var(--space-sm);font-size:13px;color:var(--ink-3)}
+.charts{display:grid;gap:var(--space-lg);margin-top:var(--space-xl);padding-top:var(--space-lg);border-top:1px solid var(--line)}
+.charts h4,.chart h4{font-size:13px;font-weight:500;color:var(--ink-2);margin-bottom:var(--space-xs)}
+.bars{display:grid;gap:10px}
+.barrow{display:grid;grid-template-columns:96px minmax(0,1fr) 84px;gap:var(--space-xs);align-items:center;font-size:13.5px}
+.barrow .bl{color:var(--ink-2)}
+.barrow .bv{text-align:right;font:400 13px var(--mono)}
+.track{height:10px;border-radius:3px;background:var(--paper-2);position:relative}
+.fill{position:absolute;inset:0;border-radius:3px;transform-origin:left;transform:scaleX(var(--w,0))}
+.limit{position:absolute;top:-5px;bottom:-5px;width:1.5px;background:var(--amber-strong)}
+.limit::after{content:"limit";position:absolute;top:-16px;left:50%;transform:translateX(-50%);font:400 10.5px var(--mono);color:var(--amber-strong)}
+[data-reveal] .fill{transition:transform 1.1s var(--ease)}
+.js [data-reveal]:not(.in) .fill{transform:scaleX(0)}
+
+/* Grid view */
+.gridv{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
+.gridv > .pane{padding:var(--space-lg) var(--space-md)}
+.gridv > .pane:first-child{border-right:1px solid var(--line)}
+.g-top{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-sm);flex-wrap:wrap}
+.g-reading{display:flex;align-items:baseline;gap:10px;margin-top:4px}
+.g-num{font:500 clamp(64px,8vw,96px)/1 var(--sans);letter-spacing:-.055em;font-variant-numeric:tabular-nums}
+.g-unit{font-size:15px;color:var(--ink-3)}
+.g-actions{display:flex;align-items:center;gap:var(--space-xs)}
+.scale{margin-top:var(--space-xl)}
+.scale-track{position:relative;display:grid;grid-template-columns:20fr 16fr 16fr 48fr;gap:3px;height:10px}
+.scale-track > i{border-radius:2px}
+.scale-track > i:nth-child(1){background:var(--brand)}
+.scale-track > i:nth-child(2){background:oklch(0.78 0.12 140)}
+.scale-track > i:nth-child(3){background:var(--amber)}
+.scale-track > i:nth-child(4){background:var(--red)}
+.scale-pin{position:absolute;inset:-8px 0;pointer-events:none;transform:translateX(var(--pos,0%));transition:transform 1s var(--ease)}
+.scale-pin::before{content:"";position:absolute;left:-1.5px;top:0;bottom:0;width:3px;border-radius:2px;background:var(--ink);box-shadow:0 0 0 2px var(--surface)}
+.scale-bands{display:grid;grid-template-columns:20fr 16fr 16fr 48fr;gap:3px;margin-top:12px;font-size:12px;color:var(--ink-3)}
+.scale-bands span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scale-ticks{display:flex;justify-content:space-between;margin-top:4px;font:400 11px var(--mono);color:var(--ink-3)}
+.g-means{font-size:16px;line-height:1.6;max-width:52ch;margin-top:var(--space-lg)}
+dl.facts{display:grid;grid-template-columns:auto minmax(0,1fr);margin:var(--space-sm) 0 0;font-size:14px}
+dl.facts dt,dl.facts dd{padding-block:11px;border-bottom:1px solid var(--line)}
+dl.facts dt{color:var(--ink-3);padding-right:var(--space-md)}
+dl.facts dd{margin:0;overflow-wrap:anywhere;text-align:right}
+dl.facts > :nth-last-child(-n+2){border-bottom:0}
+
+/* System view */
+.sys-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+.sys-grid > .pane{padding:var(--space-lg) var(--space-md)}
+.sys-grid > .pane:first-child{border-right:1px solid var(--line)}
+
+/* Results */
+.results-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:var(--space-lg) clamp(40px,6vw,88px);align-items:start}
+.r-chart{display:grid;gap:var(--space-lg);padding:var(--space-lg);background:var(--surface);border-radius:var(--r-xl);box-shadow:inset 0 0 0 1px var(--line)}
+.legend{display:flex;gap:var(--space-md);flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{width:10px;height:10px;border-radius:2px}
+.r-chart .barrow{grid-template-columns:110px minmax(0,1fr) 96px}
+.findings{list-style:none;margin:0;padding:0;counter-reset:f}
+.findings li{counter-increment:f;display:grid;grid-template-columns:36px minmax(0,1fr);gap:var(--space-2xs);padding-block:var(--space-md);border-top:1px solid var(--line);color:var(--ink-2);font-size:15.5px;line-height:1.6}
+.findings li:first-child{border-top-color:var(--ink);padding-top:var(--space-md)}
+.findings li::before{content:counter(f,decimal-leading-zero);font:400 12.5px/2 var(--mono);color:var(--ink-3)}
+.findings strong{color:var(--ink);font-weight:500}
+.results-row{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-md);margin-top:var(--space-xl)}
+.r-card{padding:var(--space-lg);background:var(--surface);border-radius:var(--r-xl);box-shadow:inset 0 0 0 1px var(--line)}
+.r-card h3{font-size:17px;font-weight:600;letter-spacing:-.015em;margin-bottom:var(--space-md)}
+.split-bar{display:flex;height:44px;border-radius:var(--r-md);overflow:hidden;gap:3px}
+.split-bar div{display:flex;align-items:center;padding:0 14px;font:400 13px var(--mono);white-space:nowrap}
+.split-bar .int4{background:var(--brand);color:var(--paper)}
+.split-bar .fp16{background:var(--fp);color:var(--paper)}
+.kv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border-radius:var(--r-md);overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+.kv div{display:grid;gap:6px;padding:var(--space-sm);background:var(--surface);align-content:start}
+.kv .v{font:500 30px/1 var(--sans);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.kv .k{font-size:13px;line-height:1.4;color:var(--ink-2)}
+.r-card .note{margin-top:var(--space-sm)}
+
+/* CTA + footer */
+.cta{background:var(--night);color:var(--night-ink);padding-block:clamp(88px,10vw,136px);position:relative;overflow:hidden}
+.cta::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--night-line) 1px,transparent 1px),linear-gradient(90deg,var(--night-line) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse 60% 80% at 100% 100%,#000 10%,transparent 70%);mask-image:radial-gradient(ellipse 60% 80% at 100% 100%,#000 10%,transparent 70%);opacity:.6;pointer-events:none}
+.cta-in{position:relative;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:var(--space-xl);align-items:end}
+.cta h2{font-size:clamp(36px,5vw,64px);line-height:1;letter-spacing:-.045em;max-width:12ch}
+.cta p{color:var(--night-ink-2);font-size:17px;line-height:1.6;max-width:44ch}
+.cmd{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);margin-top:var(--space-md);padding:8px 8px 8px 16px;border-radius:var(--r-md);background:var(--night-2);box-shadow:inset 0 0 0 1px var(--night-line);font-size:14px;max-width:420px}
+.cmd code::before{content:"$ ";color:var(--night-ink-2)}
+.cmd .copy{margin:0}
+.cta-actions{display:flex;gap:var(--space-xs);flex-wrap:wrap;margin-top:var(--space-md)}
+.footer{background:var(--night);color:var(--night-ink-2);border-top:1px solid var(--night-line);font-size:14px}
+.foot-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-xl);padding-block:var(--space-2xl) var(--space-xl)}
+.footer .logo{color:var(--night-ink)}
+.foot-brand p{margin-top:var(--space-sm);max-width:30ch;line-height:1.55}
+.foot-cols{display:grid;grid-template-columns:repeat(3,minmax(140px,auto));gap:var(--space-xl)}
+.foot-cols h4{font-size:13px;font-weight:500;color:var(--night-ink);margin-bottom:var(--space-sm)}
+.foot-cols a{display:block;padding-block:5px;transition:color .2s}
+.foot-cols a:hover{color:var(--night-ink)}
+.foot-base{display:flex;justify-content:space-between;gap:var(--space-sm);flex-wrap:wrap;padding-block:var(--space-md) var(--space-lg);border-top:1px solid var(--night-line);font-size:13px}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:70;display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--paper);padding:12px 16px;border-radius:var(--r-md);font-size:14px;box-shadow:var(--shadow-lg);max-width:min(560px,calc(100vw - 32px));animation:rise .35s var(--ease) both}
+.toast::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber);flex:none}
+.toast[hidden]{display:none}
+
+/* Scroll reveal: only hidden once JS has confirmed it can reveal them again */
+.js [data-reveal]{opacity:0;transform:translateY(16px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.js [data-reveal].in{opacity:1;transform:none}
+
+@media (max-width:1040px){
+  .stream-body{grid-template-columns:minmax(0,1fr)}
+  .stream-side{border-left:0;border-bottom:1px solid var(--night-line);grid-template-columns:repeat(3,minmax(0,1fr));order:-1}
+  .sstat{border-bottom:0;border-right:1px solid var(--night-line);padding:16px 20px}
+  .sstat:last-child{border-right:0}
+  .sv{font-size:24px}
+}
+@media (max-width:900px){
+  .nav-links{display:none}
+  .hero-copy,.section-head,.split,.dev,.results-grid,.results-row,.cta-in,.foot-in{grid-template-columns:minmax(0,1fr)}
+  .split-head{position:static}
+  .facts-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .facts-strip > div:nth-child(3){padding-left:0;border-left:0}
+  .facts-strip > div{padding-bottom:var(--space-md)}
+  .facts-strip > div:nth-child(n+3){border-top:1px solid var(--line)}
+  .run-grid,.sim-grid,.gridv,.sys-grid{grid-template-columns:minmax(0,1fr)}
+  .pane-compose,.pane-answer,.sim-grid > .pane:first-child,.gridv > .pane:first-child,.sys-grid > .pane:first-child{border-right:0;border-bottom:1px solid var(--line)}
+  .pane-route{order:-1}
+  .pane-compose{order:-2}
+  .foot-cols{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  .nav-end .status span:last-child{display:none}
+  .nav-in{gap:var(--space-md)}
+  .srow{grid-template-columns:minmax(0,1fr) 72px 68px}
+  .srow .c-safety,.srow .c-budget,.srow .c-reason{display:none}
+  .stream-side{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)}
+  .sstat{padding:14px}
+  .sv{font-size:20px}
+  .sk,.su{font-size:11.5px}
+  .fields{grid-template-columns:1fr}
+  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .guard ul{grid-template-columns:1fr}
+  .kv{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .barrow{grid-template-columns:52px minmax(0,1fr) 72px}
+  .r-chart .barrow{grid-template-columns:84px minmax(0,1fr) 84px;font-size:12.5px}
+  .r-chart,.r-card{padding:var(--space-md)}
+  .foot-cols{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sim-mode{font-size:52px}
+  .app-bar .status span:last-child{max-width:18ch;overflow:hidden;text-overflow:ellipsis}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .js [data-reveal]{opacity:1;transform:none}
+  .js [data-reveal]:not(.in) .fill{transform:scaleX(var(--w,0))}
+}
+</style>
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+<a class="skip" href="#console">Skip to the console</a>
+
+<header class="nav" id="nav">
+  <div class="container nav-in">
+    <a class="logo" href="#top" aria-label="CarbonGrid, back to top">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="9" height="9" rx="2" fill="currentColor"/><rect x="13" y="2" width="9" height="9" rx="2" fill="currentColor" opacity=".28"/><rect x="2" y="13" width="9" height="9" rx="2" fill="currentColor" opacity=".28"/><rect x="13" y="13" width="9" height="9" rx="4.5" fill="var(--brand)"/></svg>
+      CarbonGrid
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#how">How it works</a>
+      <a href="#developers">Developers</a>
+      <a href="#console">Console</a>
+      <a href="#results">Results</a>
+    </nav>
+    <div class="nav-end">
+      <span class="status" data-conn role="status"><span class="status-dot"></span><span data-conn-text>Connecting</span></span>
+      <a class="btn btn-primary btn-sm" href="#console" data-go="run">Open console</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="top">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero-copy hero-enter">
+      <div>
+        <a class="announce" href="#results"><span class="announce-tag">Research preview</span><span>Results from 182 benchmarked prompts</span><svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <h1>Inference that answers to the grid.</h1>
+      </div>
+      <div>
+        <p class="lede">CarbonGrid sits between your application and a local language model. For every prompt it scores quantization risk, reads live grid carbon intensity, and runs the model at FP16 or INT4, whichever emits less CO₂ within your latency budget.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#console" data-go="run">Open the console <svg class="arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn btn-secondary" href="#how">How routing works</a>
+        </div>
+      </div>
+    </div>
+
+    <figure class="stream on-dark" aria-labelledby="stream-cap">
+      <figcaption class="sr" id="stream-cap">A simulated stream of routing decisions. Each prompt gets a safety score and an optional latency budget, then is routed to FP16 or INT4 with its estimated CO₂.</figcaption>
+      <div class="stream-head">
+        <div class="stream-title"><span class="status-dot"></span>Decision stream</div>
+        <div class="stream-meta">Simulated with the policy engine on the measured mixed-workload profile</div>
+      </div>
+      <div class="stream-body">
+        <div class="stream-table" aria-hidden="true">
+          <div class="srow shead"><span>Prompt</span><span class="c-safety c-num">Safety</span><span class="c-budget c-num">Budget</span><span>Route</span><span class="c-num">CO₂</span></div>
+          <div id="stream-rows"></div>
+        </div>
+        <div class="stream-side">
+          <div class="sstat"><span class="sk">Grid intensity</span><span class="sv" id="hs-grid">–</span><span class="su">gCO₂/kWh, <span id="hs-grid-src">simulated</span></span></div>
+          <div class="sstat"><span class="sk">Routed to INT4</span><span class="sv" id="hs-share">–</span><span class="su" id="hs-count">0 requests</span></div>
+          <div class="sstat"><span class="sk">CO₂ avoided</span><span class="sv" id="hs-saved">–</span><span class="su">mg vs. always FP16</span></div>
+        </div>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<section class="proof container" aria-label="Benchmark summary">
+  <dl class="facts-strip" data-reveal>
+    <div><dt>Prompts benchmarked, each run three ways on a laptop GPU</dt><dd>182</dd></div>
+    <div><dt>Of mixed-workload prompts routed to INT4 after the safety check</dt><dd>52<small>%</small></dd></div>
+    <div><dt>Less GPU energy than always running FP16 on the mixed workload</dt><dd>2.5<small>%</small></dd></div>
+    <div><dt>ROC AUC of the quantization-safety classifier on unseen prompts</dt><dd>0.75</dd></div>
+  </dl>
+  <p class="fineprint" data-reveal>Measured on an NVIDIA RTX 2050 laptop GPU running Qwen2.5-1.5B-Instruct, with answers capped at 128 tokens and energy read from the GPU's NVML power sensor. Savings came at a latency cost and depend on the energy profile. <a href="#results">See the full results and caveats</a>.</p>
+  <div class="stack-row" data-reveal>
+    <span>Built on</span>
+    <ul>
+      <li>Qwen2.5<small>1.5B Instruct</small></li>
+      <li>bitsandbytes<small>NF4</small></li>
+      <li>NVIDIA NVML<small>power telemetry</small></li>
+      <li>Carbon Intensity API<small>GB grid</small></li>
+      <li>FastAPI</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="container split">
+    <div class="split-head" data-reveal>
+      <p class="eyebrow">Decision engine</p>
+      <h2>Three checks, in a fixed order, on every request.</h2>
+      <p class="section-lede">The policy is small enough to read in one sitting, and that's deliberate. Every response records which check decided it, so any routing choice can be audited after the fact.</p>
+    </div>
+    <div>
+      <ol class="steps">
+        <li class="step" data-reveal><span class="step-n">01</span><div><h3>Score quantization risk</h3><p>A lightweight classifier reads the prompt and its task type and estimates how likely an INT4 answer is to hold up against FP16. Prompts below the pass mark skip the remaining checks and run at full precision.</p><code class="policy">safety_threshold&nbsp;=&nbsp;<b>0.50</b></code></div></li>
+        <li class="step" data-reveal><span class="step-n">02</span><div><h3>Respect the latency budget</h3><p>If the request sets a time limit, each precision's measured latency is compared against it with a small tolerance. A precision that would miss the budget is ruled out before carbon is considered.</p><code class="policy">latency_tolerance&nbsp;=&nbsp;<b>10%</b></code></div></li>
+        <li class="step" data-reveal><span class="step-n">03</span><div><h3>Pick the lower-carbon precision</h3><p>Estimated CO₂ is the measured energy per answer multiplied by the grid's current carbon intensity. The lower figure wins. Differences under a tenth of a milligram count as a tie and go to the faster precision.</p><code class="policy">co2_tie_threshold&nbsp;=&nbsp;<b>0.1&nbsp;mg</b></code></div></li>
+      </ol>
+      <div class="guard" data-reveal>
+        <h4>Guardrails</h4>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><span>Free GPU memory is checked first. FP16 needs 3,200 MB and INT4 needs 1,400 MB.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><span>If the grid API is down, readings come from a replay file, then a fixed 200&nbsp;g/kWh.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><span>If neither precision fits the latency budget, the request falls back to FP16.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><span>If the classifier can't run, the request stays on FP16.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="developers">
+  <div class="container dev">
+    <div data-reveal>
+      <p class="eyebrow">API</p>
+      <h2>One endpoint. Every decision explained.</h2>
+      <p class="section-lede">POST a prompt to <code>/generate</code> and get the answer back with its full routing record: the precision chosen and why, the grid reading behind it, and the energy the GPU used while generating it.</p>
+      <ul class="ticks">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>A machine-readable decision reason on every response</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Energy measured through NVML, and flagged as estimated when the sensor isn't available</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Grid source, reading age and staleness flags</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Free VRAM and per-precision memory thresholds</li>
+      </ul>
+      <a class="link-arrow" data-docs href="/docs">Read the API reference <svg class="arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <div class="code-window" data-reveal>
+      <div class="code-bar">
+        <div role="tablist" aria-label="Code sample" style="display:flex">
+          <button class="code-tab" role="tab" id="ct-req" aria-selected="true" aria-controls="cp-req" data-code="req">Request</button>
+          <button class="code-tab" role="tab" id="ct-res" aria-selected="false" aria-controls="cp-res" data-code="res" tabindex="-1">Response</button>
+        </div>
+        <span class="code-path">POST /generate</span>
+        <button class="copy" type="button" data-copy-from="code">Copy</button>
+      </div>
+<pre class="code" id="cp-req" role="tabpanel" aria-labelledby="ct-req"><span class="p">$</span> curl -X POST <span class="s">"http://localhost:7860/generate"</span> \
+    -H <span class="s">"Content-Type: application/json"</span> \
+    -d <span class="s">'{
+      "prompt": "Summarise the causes of the 2008 financial crisis.",
+      "task_type": "summarization",
+      "max_new_tokens": 128,
+      "latency_requirement_ms": 30000
+    }'</span></pre>
+<pre class="code" id="cp-res" role="tabpanel" aria-labelledby="ct-res" hidden><span class="p">{</span>
+  <span class="k">"response"</span><span class="p">:</span> <span class="s">"Cheap credit and loose lending standards inflated…"</span><span class="p">,</span>
+  <span class="k">"carbon_grid"</span><span class="p">: {</span>
+    <span class="k">"selected_precision"</span><span class="p">:</span> <span class="s">"fp16"</span><span class="p">,</span>
+    <span class="k">"decision_reason"</span><span class="p">:</span> <span class="s">"environmental_cost_equal"</span><span class="p">,</span>
+    <span class="k">"safety_probability"</span><span class="p">:</span> <span class="n">0.6731</span><span class="p">,</span>
+    <span class="k">"safety_gate_passed"</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+    <span class="k">"carbon_intensity_gco2_per_kwh"</span><span class="p">:</span> <span class="n">186.0</span><span class="p">,</span>
+    <span class="k">"carbon_source"</span><span class="p">:</span> <span class="s">"live"</span><span class="p">,</span>
+    <span class="k">"actual_energy_wh"</span><span class="p">:</span> <span class="n">0.048912</span><span class="p">,</span>
+    <span class="k">"actual_co2_g"</span><span class="p">:</span> <span class="n">0.009098</span><span class="p">,</span>
+    <span class="k">"measurement_source"</span><span class="p">:</span> <span class="s">"measured"</span><span class="p">,</span>
+    <span class="k">"actual_latency_ms"</span><span class="p">:</span> <span class="n">5874</span><span class="p">,</span>
+    <span class="k">"tokens_per_second"</span><span class="p">:</span> <span class="n">21.8</span><span class="p">,</span>
+    <span class="k">"free_vram_mb"</span><span class="p">:</span> <span class="n">3612</span>
+  <span class="p">}</span>
+<span class="p">}</span></pre>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="console">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <div><p class="eyebrow">Console</p><h2>Run it against your own GPU.</h2></div>
+      <p class="section-lede">Send a prompt to the model on this machine and watch the route it takes. When the backend isn't running, the console applies the same rules to demo data.</p>
+    </div>
+
+    <div class="app" id="workspace">
+      <div class="app-bar">
+        <div class="seg" role="tablist" aria-label="Console views">
+          <button class="seg-btn" role="tab" id="tab-run" data-view="run" aria-controls="view-run">Run</button>
+          <button class="seg-btn" role="tab" id="tab-simulate" data-view="simulate" aria-controls="view-simulate">Simulate</button>
+          <button class="seg-btn" role="tab" id="tab-grid" data-view="grid" aria-controls="view-grid">Grid carbon</button>
+          <button class="seg-btn" role="tab" id="tab-system" data-view="system" aria-controls="view-system">System</button>
+        </div>
+        <span class="status" data-conn><span class="status-dot"></span><span data-conn-text>Connecting</span></span>
+      </div>
+      <div class="demo-note" id="demo-note" hidden>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg>
+        <span>You're looking at demo data. The backend isn't running, so answers and readings are simulated. Run <code>start_carbongrid.bat</code> to use the real model; this page reconnects on its own.</span>
+      </div>
+
+      <section class="view" id="view-run" role="tabpanel" aria-labelledby="tab-run">
+        <div class="run-grid">
+          <div class="pane pane-compose">
+            <form id="composer" autocomplete="off">
+              <div class="pane-head"><h3><label for="prompt" style="all:unset">Prompt</label></h3><span class="hint"><kbd>Ctrl</kbd> <kbd>Enter</kbd> to run</span></div>
+              <textarea id="prompt" name="prompt" required>Explain in three sentences why the sky looks blue during the day.</textarea>
+              <div class="examples" aria-label="Example prompts">
+                <button type="button" class="chip" data-ex="factual">What is the capital of Australia?</button>
+                <button type="button" class="chip" data-ex="coding">Write a Python function to reverse a linked list.</button>
+                <button type="button" class="chip" data-ex="summarization">Summarise the causes of the 2008 financial crisis.</button>
+              </div>
+              <div class="fields">
+                <div>
+                  <label for="task">Task type</label>
+                  <select id="task">
+                    <option value="unknown">Detect automatically</option>
+                    <option value="factual">Factual</option>
+                    <option value="explanation" selected>Explanation</option>
+                    <option value="reasoning">Reasoning</option>
+                    <option value="coding">Coding</option>
+                    <option value="summarization">Summarisation</option>
+                    <option value="extraction">Extraction</option>
+                    <option value="scientific">Scientific</option>
+                    <option value="creative">Creative</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="latency">Latency budget (ms)</label>
+                  <input type="number" id="latency" min="500" max="120000" step="500" placeholder="No limit">
+                </div>
+                <div class="wide">
+                  <label for="tokens">Max answer length (tokens)</label>
+                  <div class="range-row"><input type="range" id="tokens" min="16" max="512" step="16" value="128"><output id="tokens-out" for="tokens">128</output></div>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="btn btn-primary" type="submit" id="run-btn"><span class="spin" aria-hidden="true"></span><span id="run-label">Run prompt</span></button>
+                <span class="hint mono" id="run-status" aria-live="polite"></span>
+              </div>
+            </form>
+          </div>
+
+          <div class="pane pane-route">
+            <div class="pane-head"><h3>Route</h3><span class="tag" id="route-id">waiting</span></div>
+            <div class="circuit-scroll">
+              <svg class="circuit" id="circuit" viewBox="0 0 660 260" role="img" aria-label="Routing diagram: prompt, safety check, grid carbon and latency budget, ending at FP16 or INT4">
+                <path class="base" d="M60 150 H200"/>
+                <path class="base" d="M200 150 H340"/>
+                <path class="base" d="M340 150 H480"/>
+                <path class="base" d="M480 150 C535 150 521 72 576 72"/>
+                <path class="base" d="M480 150 C535 150 521 218 576 218"/>
+                <path class="base" d="M200 150 V108 Q200 72 236 72 H576" stroke-dasharray="3 5"/>
+                <g id="lit"></g>
+                <g id="n-prompt"><circle class="node" cx="60" cy="150" r="10"/><circle class="core" cx="60" cy="150" r="3.5"/><text x="60" y="186" text-anchor="middle">Prompt</text><text class="val" id="v-prompt" x="60" y="205" text-anchor="middle">–</text></g>
+                <g id="n-safety"><circle class="node" cx="200" cy="150" r="10"/><circle class="core" cx="200" cy="150" r="3.5"/><text x="200" y="186" text-anchor="middle">Safety check</text><text class="val" id="v-safety" x="200" y="205" text-anchor="middle">–</text></g>
+                <g id="n-grid"><circle class="node" cx="340" cy="150" r="10"/><circle class="core" cx="340" cy="150" r="3.5"/><text x="340" y="186" text-anchor="middle">Grid carbon</text><text class="val" id="v-grid" x="340" y="205" text-anchor="middle">–</text></g>
+                <g id="n-time"><circle class="node" cx="480" cy="150" r="10"/><circle class="core" cx="480" cy="150" r="3.5"/><text x="480" y="186" text-anchor="middle">Latency budget</text><text class="val" id="v-time" x="480" y="205" text-anchor="middle">–</text></g>
+                <g id="t-full"><rect class="term" x="576" y="50" width="78" height="44" rx="8"/><text class="term-t" x="615" y="71" text-anchor="middle">FP16</text><text class="term-s" x="615" y="86" text-anchor="middle">full</text></g>
+                <g id="t-lean"><rect class="term" x="576" y="196" width="78" height="44" rx="8"/><text class="term-t" x="615" y="217" text-anchor="middle">INT4</text><text class="term-s" x="615" y="232" text-anchor="middle">compressed</text></g>
+                <text class="bypass-label" x="388" y="62" text-anchor="middle">safety check failed → FP16</text>
+                <circle id="spark" r="4" opacity="0"/>
+              </svg>
+            </div>
+            <p class="verdict"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v5M12 7.5h.01"/></svg><span id="verdict" aria-live="polite">The diagram traces the path your prompt took and explains why.</span></p>
+          </div>
+
+          <div class="pane pane-answer">
+            <div class="pane-head"><h3>Answer</h3><div class="meta" id="answer-meta"></div></div>
+            <div class="answer empty" id="answer">Run a prompt to see the model's answer and how it was routed.</div>
+          </div>
+
+          <div class="pane pane-metrics">
+            <div class="metrics">
+              <div class="metric"><div class="mk"><span>Energy</span><span class="tag" id="s-energy">–</span></div><div class="mv" id="r-energy">–</div><div class="meter"><i id="m-energy"></i></div></div>
+              <div class="metric"><div class="mk"><span>CO₂ emitted</span><span class="tag" id="s-co2">–</span></div><div class="mv" id="r-co2">–</div><div class="meter"><i id="m-co2"></i></div></div>
+              <div class="metric"><div class="mk"><span>Free GPU memory</span></div><div class="mv" id="r-vram">–</div><div class="meter"><i id="m-vram"></i></div></div>
+              <div class="metric"><div class="mk"><span>Response time</span></div><div class="mv" id="r-latency">–</div></div>
+              <div class="metric"><div class="mk"><span>Throughput</span></div><div class="mv" id="r-speed">–</div></div>
+              <div class="metric"><div class="mk"><span>GPU power</span></div><div class="mv" id="r-power">–</div><div class="mnote" id="vram-note"></div></div>
+            </div>
+          </div>
+
+          <div class="pane pane-log">
+            <div class="pane-head"><h3>Runs this session</h3><span class="hint" id="log-total"></span></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Time</th><th>Prompt</th><th>Ran on</th><th>Reason</th><th class="n">Energy (Wh)</th><th class="n">CO₂ (mg)</th><th class="n">Time (s)</th></tr></thead>
+                <tbody id="log"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-simulate" role="tabpanel" aria-labelledby="tab-simulate">
+        <div class="sim-grid">
+          <form class="pane" id="sim-form" autocomplete="off">
+            <div class="fields">
+              <div class="wide">
+                <label for="sim-safety">Safety score <span class="hint">(pass mark 0.50)</span></label>
+                <div class="range-row"><input type="range" id="sim-safety" min="0" max="1" step="0.01" value="0.64"><output id="sim-safety-out">0.64</output></div>
+              </div>
+              <div class="wide">
+                <label for="sim-carbon">Grid carbon intensity <span class="hint">(gCO₂/kWh)</span></label>
+                <div class="range-row"><input type="range" id="sim-carbon" min="0" max="500" step="5" value="190"><output id="sim-carbon-out">190</output></div>
+              </div>
+              <div class="wide">
+                <label for="sim-latency">Latency budget <span class="hint">(0 = no limit)</span></label>
+                <div class="range-row"><input type="range" id="sim-latency" min="0" max="25000" step="500" value="0"><output id="sim-latency-out">None</output></div>
+              </div>
+              <div class="wide">
+                <label for="sim-profile">Energy profile</label>
+                <select id="sim-profile">
+                  <option value="phase05">Short answers (Phase 0.5, live default)</option>
+                  <option value="b2_workload">Mixed workload (B2 benchmark)</option>
+                </select>
+              </div>
+            </div>
+            <p class="note" style="margin-top:var(--space-md)" id="sim-profile-note"></p>
+          </form>
+          <div class="pane" aria-live="polite" data-sim-out>
+            <p class="label-sm">Decision</p>
+            <div class="sim-decision"><span class="sim-mode" id="sim-mode">FP16</span><p class="sim-reason" id="sim-reason"></p></div>
+            <p class="confirm" id="sim-confirm"></p>
+            <div class="charts">
+              <div class="chart"><h4>Estimated CO₂ per answer</h4><div class="bars" id="sim-co2"></div></div>
+              <div class="chart"><h4>Expected response time</h4><div class="bars" id="sim-lat"></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-grid" role="tabpanel" aria-labelledby="tab-grid">
+        <div class="gridv">
+          <div class="pane">
+            <div class="g-top">
+              <div>
+                <p class="label-sm">Great Britain, national grid</p>
+                <div class="g-reading"><span class="g-num" id="g-num">–</span><span class="g-unit">gCO₂/kWh</span></div>
+              </div>
+              <div class="g-actions"><span id="g-badge"></span><button class="btn btn-secondary btn-sm" type="button" id="grid-refresh">Refresh</button></div>
+            </div>
+            <div class="scale" aria-hidden="true">
+              <div class="scale-track"><i></i><i></i><i></i><i></i><span class="scale-pin" id="g-pin"></span></div>
+              <div class="scale-bands"><span>Very clean</span><span>Fairly clean</span><span>Average</span><span>Carbon-heavy</span></div>
+              <div class="scale-ticks"><span>0</span><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span></div>
+            </div>
+            <p class="g-means" id="g-means"></p>
+            <p class="note" style="margin-top:var(--space-sm)">From the Carbon Intensity API for Great Britain. If it's unreachable, CarbonGrid uses a replay file, then a fixed 200&nbsp;g/kWh.</p>
+          </div>
+          <div class="pane">
+            <h3>Reading details</h3>
+            <dl class="facts" id="g-facts"></dl>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-system" role="tabpanel" aria-labelledby="tab-system">
+        <div class="sys-grid">
+          <div class="pane">
+            <div class="pane-head"><h3>Services</h3><span id="sys-badge"></span></div>
+            <dl class="facts" id="sys-facts"></dl>
+            <p class="note" style="margin-top:var(--space-md)"><a class="link-arrow" data-docs href="/docs">Open the API reference <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
+          </div>
+          <div class="pane">
+            <div class="pane-head"><h3>Measured baselines</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Profile</th><th>Mode</th><th class="n">Energy (Wh)</th><th class="n">Time (s)</th><th class="n">Tokens/s</th><th class="n">Power (W)</th><th class="n">VRAM (MB)</th></tr></thead>
+                <tbody>
+                  <tr><td rowspan="2">Short answers</td><td><span class="badge fp16">FP16</span></td><td class="n">0.0488</td><td class="n">5.87</td><td class="n">21.9</td><td class="n">30.5</td><td class="n">2,960</td></tr>
+                  <tr><td><span class="badge int4">INT4</span></td><td class="n">0.0493</td><td class="n">10.58</td><td class="n">12.1</td><td class="n">17.1</td><td class="n">1,161</td></tr>
+                  <tr><td rowspan="2">Mixed workload</td><td><span class="badge fp16">FP16</span></td><td class="n">0.1061</td><td class="n">11.64</td><td class="n">–</td><td class="n">–</td><td class="n">–</td></tr>
+                  <tr><td><span class="badge int4">INT4</span></td><td class="n">0.0945</td><td class="n">22.08</td><td class="n">–</td><td class="n">–</td><td class="n">–</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="note" style="margin-top:var(--space-sm)">FP16 needs at least 3,200 MB of free GPU memory and INT4 needs 1,400 MB. Prompts must score 0.50 or higher on the safety check to run on INT4.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="results">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <div><p class="eyebrow">Results</p><h2>What 182 prompts on a laptop GPU taught us.</h2></div>
+      <p class="section-lede">Every prompt ran three ways: always FP16, always INT4, and routed by CarbonGrid. We report the results that didn't go our way alongside the ones that did.</p>
+    </div>
+    <div class="results-grid">
+      <div class="r-chart" id="cmp" data-reveal></div>
+      <ol class="findings" data-reveal>
+        <li><span><strong>INT4 doesn't save energy on short answers.</strong> It draws less power but takes about twice as long, so energy per answer comes out the same as FP16.</span></li>
+        <li><span><strong>Compression costs quality.</strong> INT4 answers averaged 0.52 against 1.00 for the FP16 reference.</span></li>
+        <li><span><strong>On the short-answer profile, routing matched FP16.</strong> CarbonGrid kept every prompt on FP16, with no significant difference in energy or speed (p = 0.10).</span></li>
+        <li><span><strong>On the mixed workload, routing saved energy.</strong> 52% of prompts went to INT4 and energy fell about 2.5% versus always FP16. Answers were 4.3&nbsp;s slower, and routed INT4 answers scored 0.66 on quality.</span></li>
+        <li><span><strong>CO₂ figures are estimates.</strong> They're measured energy multiplied by 200&nbsp;g/kWh, the offline grid value used during testing.</span></li>
+      </ol>
+    </div>
+    <div class="results-row">
+      <div class="r-card" data-reveal>
+        <h3>Routing on the mixed workload</h3>
+        <div class="split-bar" role="img" aria-label="52 percent of prompts routed to INT4, 48 percent to FP16">
+          <div class="int4" style="width:52.2%">INT4 52%</div>
+          <div class="fp16" style="width:47.8%">FP16 48%</div>
+        </div>
+        <p class="note">95 prompts passed the safety check and went to INT4. 87 failed it and stayed on FP16. No latency or memory fallbacks were triggered.</p>
+      </div>
+      <div class="r-card" data-reveal>
+        <h3>Safety classifier on unseen prompts</h3>
+        <div class="kv">
+          <div><span class="v">66%</span><span class="k">Accuracy</span></div>
+          <div><span class="v">0.75</span><span class="k">ROC AUC</span></div>
+          <div><span class="v">40%</span><span class="k">Unsafe prompts let through</span></div>
+          <div><span class="v">55%</span><span class="k">Prompts eligible for INT4</span></div>
+        </div>
+        <p class="note">Measured on a held-out set of 29 prompts, so treat these as rough. Reducing the false-pass rate is the main open problem.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="container cta-in">
+    <div data-reveal>
+      <h2>Start routing in one command.</h2>
+    </div>
+    <div data-reveal>
+      <p>Starts the API on port 7860, loads the model and opens this console. The first load takes 20 to 40 seconds.</p>
+      <div class="cmd"><code>start_carbongrid.bat</code><button class="copy" type="button" data-copy="start_carbongrid.bat">Copy</button></div>
+      <div class="cta-actions">
+        <a class="btn btn-light" href="#console" data-go="run">Open the console</a>
+        <a class="btn btn-outline-dark" data-docs href="/docs">API reference</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container foot-in">
+    <div class="foot-brand">
+      <a class="logo" href="#top"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="9" height="9" rx="2" fill="currentColor"/><rect x="13" y="2" width="9" height="9" rx="2" fill="currentColor" opacity=".28"/><rect x="2" y="13" width="9" height="9" rx="2" fill="currentColor" opacity=".28"/><rect x="13" y="13" width="9" height="9" rx="4.5" fill="var(--signal)"/></svg>CarbonGrid</a>
+      <p>Carbon-aware middleware for local language model inference.</p>
+    </div>
+    <div class="foot-cols">
+      <div><h4>Product</h4><a href="#console" data-go="run">Console</a><a href="#console" data-go="simulate">Simulator</a><a href="#console" data-go="grid">Grid carbon</a><a href="#console" data-go="system">System status</a></div>
+      <div><h4>Research</h4><a href="#results">Results</a><a href="#how">Decision policy</a></div>
+      <div><h4>Developers</h4><a data-docs href="/docs">API reference</a><a href="#developers">Generate endpoint</a></div>
+    </div>
+  </div>
+  <div class="container foot-base"><span>© 2026 CarbonGrid AI</span><span>Grid data from the National Grid ESO Carbon Intensity API</span></div>
+</footer>
+
+<div class="toast" id="toast" role="alert" hidden></div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const proto = location.protocol, host = location.hostname;
+  let API = null;
+  if (proto === "file:") API = "http://127.0.0.1:8000";
+  else if (/^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])$/.test(host) || /^(192\.168|10\.)/.test(host)) API = "";
+  else API = ""; // Same-origin for production (HF Spaces, cloud deployments)
+  let LIVE = false;
+
+  const PROFILES = {
+    phase05: { fp16: { e: 0.0488, l: 5867 }, int4: { e: 0.0493, l: 10580 } },
+    b2_workload: { fp16: { e: 0.1061, l: 11640 }, int4: { e: 0.0945, l: 22077 } }
+  };
+  const POLICY = { threshold: 0.5, tol: 0.10, co2TieMg: 0.1 };
+  const REASONS = {
+    safety_gate_failed: "The safety check says INT4 could hurt this answer, so it ran at full precision (FP16).",
+    int4_lower_environmental_cost: "INT4 emits less CO₂ at the current grid intensity, so it ran on INT4.",
+    fp16_lower_environmental_cost: "FP16 emits less CO₂ on this GPU, so it stayed on FP16.",
+    environmental_cost_equal: "Both precisions emit about the same CO₂, so it picked the faster one.",
+    int4_latency_violation: "INT4 would miss the latency budget, so it ran on FP16.",
+    fp16_latency_violation: "FP16 would miss the latency budget, so it ran on INT4.",
+    both_latency_violation: "Neither precision fits the latency budget, so it fell back to FP16.",
+    fallback_policy: "Neither precision fits the latency budget, so it fell back to FP16.",
+    resource_constraint: "There isn't enough free GPU memory for one precision, so it used the one that fits.",
+    classifier_error: "The safety check didn't run, so it stayed on FP16 to be safe."
+  };
+  const SHORT = {
+    safety_gate_failed: "Safety check failed", int4_lower_environmental_cost: "Lower CO₂", fp16_lower_environmental_cost: "Lower CO₂",
+    environmental_cost_equal: "Equal CO₂, faster", int4_latency_violation: "INT4 too slow", fp16_latency_violation: "FP16 too slow",
+    both_latency_violation: "Both too slow", fallback_policy: "Both too slow", resource_constraint: "GPU memory", classifier_error: "Classifier error"
+  };
+
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    // Storage can be blocked (private mode, file://); remembering the last tab is a convenience, so a failed write is fine.
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { return; } }
+  };
+
+  async function api(path, opts = {}, timeout = 4000) {
+    const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), timeout);
+    try {
+      const r = await fetch(API + path, { ...opts, signal: ctl.signal, headers: { "Content-Type": "application/json" } });
+      const body = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(body.detail || ("Server returned " + r.status));
+      return body;
+    } finally { clearTimeout(t); }
+  }
+  function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, 6000); }
+
+  const fmt = (n, d = 2) => n == null || isNaN(n) ? "–" : Number(n).toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const ago = s => s == null ? "–" : s < 90 ? Math.round(s) + " s ago" : s < 5400 ? Math.round(s / 60) + " min ago" : (s / 3600).toFixed(1) + " h ago";
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const modeBadge = p => p === "int4" ? '<span class="badge int4">INT4</span>' : '<span class="badge fp16">FP16</span>';
+
+  function setConn(state, text) {
+    $$("[data-conn]").forEach(c => { c.className = "status " + state; $("[data-conn-text]", c).textContent = text; });
+    $("#demo-note").hidden = state === "live";
+  }
+
+  function countTo(el, value, dp, unit) {
+    if (value == null || isNaN(value)) { el.innerHTML = "–"; return; }
+    const from = parseFloat(el.dataset.v || "0") || 0; el.dataset.v = value;
+    const t0 = performance.now(), D = reduceMotion ? 0 : 700;
+    const step = now => {
+      const k = D ? Math.min(1, (now - t0) / D) : 1, e = 1 - Math.pow(1 - k, 4);
+      el.innerHTML = fmt(from + (value - from) * e, dp) + (unit ? "<small>" + unit + "</small>" : "");
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  function paintRange(r) { r.style.setProperty("--p", ((r.value - r.min) / (r.max - r.min) * 100) + "%"); }
+  $$("input[type=range]").forEach(r => { paintRange(r); r.addEventListener("input", () => paintRange(r)); });
+
+  /* Mirror of carbongrid/decision/engine.py, used for demo data and the simulator. */
+  function decide({ safety, carbon, latencyReq, profile }) {
+    const P = PROFILES[profile] || PROFILES.phase05;
+    const fp16co2mg = P.fp16.e * carbon, int4co2mg = P.int4.e * carbon;
+    const out = { safety, carbon, P, fp16co2mg, int4co2mg, gate: safety >= POLICY.threshold, latencyReq };
+    if (!out.gate) return { ...out, precision: "fp16", reason: "safety_gate_failed" };
+    let fOk = true, iOk = true;
+    if (latencyReq) { const eff = latencyReq * (1 + POLICY.tol); fOk = P.fp16.l <= eff; iOk = P.int4.l <= eff; }
+    if (fOk && iOk) {
+      const diff = Math.round(Math.abs(fp16co2mg - int4co2mg) * 1e6) / 1e6;
+      if (diff < POLICY.co2TieMg) return { ...out, precision: P.fp16.l <= P.int4.l ? "fp16" : "int4", reason: "environmental_cost_equal" };
+      return int4co2mg < fp16co2mg ? { ...out, precision: "int4", reason: "int4_lower_environmental_cost" } : { ...out, precision: "fp16", reason: "fp16_lower_environmental_cost" };
+    }
+    if (fOk) return { ...out, precision: "fp16", reason: "int4_latency_violation" };
+    if (iOk) return { ...out, precision: "int4", reason: "fp16_latency_violation" };
+    return { ...out, precision: "fp16", reason: "fallback_policy" };
+  }
+
+  let demoCarbon = 186;
+  function hash(s) { let h = 2166136261; for (const ch of s) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return (h >>> 0) / 4294967295; }
+  function demoSafety(prompt, task) {
+    const base = { factual: .74, extraction: .7, summarization: .64, explanation: .6, creative: .57, unknown: .55, scientific: .46, reasoning: .4, coding: .34 }[task] ?? .55;
+    let s = base + (hash(prompt) - .5) * .16;
+    if (/\b(def|function|class|code|python|javascript|sql)\b/i.test(prompt)) s -= .12;
+    if (/\b(prove|derive|step by step|calculate)\b/i.test(prompt)) s -= .1;
+    if (prompt.length < 60) s += .06;
+    return Math.max(.02, Math.min(.98, s));
+  }
+  function guessTask(p) {
+    if (/\b(def|function|code|python|javascript|sql|reverse)\b/i.test(p)) return "coding";
+    if (/summari[sz]e/i.test(p)) return "summarization";
+    if (/^(what|who|when|where|which)\b/i.test(p)) return "factual";
+    if (/\b(why|explain|how)\b/i.test(p)) return "explanation";
+    return "unknown";
+  }
+  function demoGenerate(req) {
+    const task = req.task_type === "unknown" ? guessTask(req.prompt) : req.task_type;
+    const safety = demoSafety(req.prompt, task);
+    demoCarbon = Math.round(Math.max(120, Math.min(260, demoCarbon + (Math.random() - .5) * 14)));
+    const d = decide({ safety, carbon: demoCarbon, latencyReq: req.latency_requirement_ms, profile: "phase05" });
+    const scale = req.max_new_tokens / 128, jitter = 1 + (hash(req.prompt + "j") - .5) * .08, sel = d.P[d.precision];
+    const energy = sel.e * scale * jitter, lat = sel.l * scale * jitter;
+    return {
+      response: "Demo answer. When CarbonGrid is running on your machine, Qwen 2.5 answers this prompt here:\n\n“" + req.prompt + "”\n\nThe routing, energy and CO₂ figures are simulated from the measured short-answer profile.",
+      carbon_grid: {
+        request_id: Math.floor(hash(req.prompt + Date.now()) * 0xffffffff).toString(16).slice(0, 8),
+        selected_precision: d.precision, decision_reason: d.reason, safety_probability: +safety.toFixed(4), safety_threshold: .5,
+        safety_gate_passed: d.gate, carbon_intensity_gco2_per_kwh: demoCarbon, carbon_source: "demo",
+        latency_requirement_ms: req.latency_requirement_ms,
+        actual_latency_ms: Math.round(lat), actual_energy_wh: energy, actual_co2_g: energy / 1000 * demoCarbon,
+        measurement_source: "demo", tokens_per_second: d.precision === "int4" ? 12.1 : 21.9,
+        avg_power_w: d.precision === "int4" ? 17.1 : 30.5, free_vram_mb: 3612
+      }
+    };
+  }
+
+  /* Hero decision stream */
+  const gridNow = { g: null, src: "simulated" };
+  function setGridNow(g, src) {
+    gridNow.g = g; gridNow.src = src;
+    $("#hs-grid").textContent = Math.round(g);
+    $("#hs-grid-src").textContent = src;
+  }
+  const STREAM_PROMPTS = [
+    ["What is the capital of Australia?", "factual"],
+    ["Write a SQL query that returns the top five customers by revenue.", "coding"],
+    ["Summarise this quarterly report in three bullet points.", "summarization"],
+    ["Explain why the sky looks blue during the day.", "explanation"],
+    ["Extract every date mentioned in this email thread.", "extraction"],
+    ["Prove that the square root of 2 is irrational.", "reasoning"],
+    ["Write a short product description for a ceramic mug.", "creative"],
+    ["How do vaccines train the immune system?", "explanation"],
+    ["Which planet has the most known moons?", "factual"],
+    ["Refactor this Python function to use a generator.", "coding"],
+    ["Summarise the causes of the 2008 financial crisis.", "summarization"],
+    ["Calculate the compound interest on £5,000 at 4% over 10 years.", "reasoning"],
+    ["List the side effects mentioned in this patient leaflet.", "extraction"],
+    ["What does CRISPR stand for?", "scientific"],
+    ["Draft a polite reply declining a meeting invite.", "creative"],
+    ["Who wrote The Left Hand of Darkness?", "factual"]
+  ];
+  const BUDGETS = [null, null, null, null, 15000, 30000, 8000];
+  const stream = { n: 0, int4: 0, saved: 0, i: Math.floor(Math.random() * STREAM_PROMPTS.length) };
+  function streamTick(animate) {
+    const [prompt, task] = STREAM_PROMPTS[stream.i++ % STREAM_PROMPTS.length];
+    if (!LIVE || gridNow.g == null) setGridNow(Math.round(Math.max(120, Math.min(260, (gridNow.g ?? demoCarbon) + (Math.random() - .5) * 10))), gridNow.src);
+    const carbon = gridNow.g;
+    const safety = Math.max(.02, Math.min(.98, demoSafety(prompt, task) + (Math.random() - .5) * .1));
+    const budget = BUDGETS[Math.floor(Math.random() * BUDGETS.length)];
+    const d = decide({ safety, carbon, latencyReq: budget, profile: "b2_workload" });
+    const int4 = d.precision === "int4", co2 = int4 ? d.int4co2mg : d.fp16co2mg;
+    stream.n++; if (int4) { stream.int4++; stream.saved += d.fp16co2mg - d.int4co2mg; }
+    const row = document.createElement("div");
+    row.className = "srow" + (animate && !reduceMotion ? " enter" : "");
+    row.innerHTML = `<span class="c-prompt">${esc(prompt)}</span><span class="c-safety c-num ${d.gate ? "" : "c-dim"}">${safety.toFixed(2)}</span><span class="c-budget c-num c-dim">${budget ? budget / 1000 + " s" : "none"}</span><span class="c-route">${modeBadge(d.precision)}<span class="c-reason">${esc(SHORT[d.reason])}</span></span><span class="c-num">${fmt(co2, 2)} mg</span>`;
+    const rows = $("#stream-rows"); rows.prepend(row);
+    while (rows.children.length > 6) rows.lastElementChild.remove();
+    $("#hs-share").textContent = Math.round(stream.int4 / stream.n * 100) + "%";
+    $("#hs-count").textContent = "of " + stream.n + " request" + (stream.n === 1 ? "" : "s");
+    $("#hs-saved").textContent = fmt(stream.saved, 1);
+  }
+  function startStream() {
+    for (let i = 0; i < 6; i++) streamTick(false);
+    let visible = true;
+    new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe($(".stream"));
+    setInterval(() => { if (visible && !document.hidden) streamTick(true); }, 2400);
+  }
+
+  /* Routing diagram */
+  const LIT = {
+    p1: "M60 150 H200", p2: "M200 150 H340", p3: "M340 150 H480",
+    full: "M480 150 C535 150 521 72 576 72", lean: "M480 150 C535 150 521 218 576 218",
+    bypass: "M200 150 V108 Q200 72 236 72 H576"
+  };
+  const ROUTE = {
+    full: "M60 150 H480 C535 150 521 72 576 72", lean: "M60 150 H480 C535 150 521 218 576 218", bypass: "M60 150 H200 V108 Q200 72 236 72 H576"
+  };
+  function resetCircuit(busy) {
+    $("#lit").innerHTML = ""; const sp = $("#spark"); sp.setAttribute("opacity", "0"); sp.innerHTML = "";
+    $$(".circuit .node").forEach(n => n.setAttribute("class", "node"));
+    $("#t-full").removeAttribute("class"); $("#t-lean").removeAttribute("class");
+    ["prompt", "safety", "grid", "time"].forEach(k => $("#v-" + k).textContent = "–");
+    if (busy) { $("#n-prompt .node").setAttribute("class", "node busy pulse"); $("#v-prompt").textContent = "sending"; }
+  }
+  function drawCircuit(cg, req) {
+    resetCircuit(false);
+    const int4 = cg.selected_precision === "int4", gate = cg.safety_gate_passed;
+    $("#circuit").style.setProperty("--route", int4 ? "var(--brand)" : "var(--fp)");
+    const seq = gate ? ["p1", "p2", "p3", int4 ? "lean" : "full"] : ["p1", "bypass"];
+    const nodes = gate ? ["n-prompt", "n-safety", "n-grid", "n-time"] : ["n-prompt", "n-safety"];
+    $("#v-prompt").textContent = (req.prompt.length > 999 ? "999+" : req.prompt.length) + " chars";
+    $("#v-safety").textContent = (cg.safety_probability ?? 0).toFixed(2) + (gate ? " ≥ " : " < ") + (cg.safety_threshold ?? .5).toFixed(2);
+    $("#v-grid").textContent = gate ? Math.round(cg.carbon_intensity_gco2_per_kwh) + " g/kWh" : "skipped";
+    $("#v-time").textContent = gate ? (cg.latency_requirement_ms ? "≤ " + fmt(cg.latency_requirement_ms / 1000, 1) + " s" : "no limit") : "skipped";
+    let delay = 0;
+    seq.forEach((k, i) => {
+      const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      p.setAttribute("d", LIT[k]); p.setAttribute("class", "lit");
+      $("#lit").appendChild(p);
+      const len = p.getTotalLength(), dur = k === "bypass" ? 520 : 300;
+      if (!reduceMotion) { p.style.strokeDasharray = len; p.style.strokeDashoffset = len; p.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }], { duration: dur, delay, easing: "cubic-bezier(.65,0,.35,1)", fill: "forwards" }); }
+      const id = nodes[i];
+      if (id) setTimeout(() => $("#" + id + " .node").setAttribute("class", "node " + (id === "n-safety" && !gate ? "fail" : "pass")), reduceMotion ? 0 : delay);
+      delay += dur;
+    });
+    setTimeout(() => {
+      $(int4 ? "#t-lean" : "#t-full").setAttribute("class", int4 ? "on-lean" : "on-full");
+      if (!reduceMotion) {
+        const sp = $("#spark"); sp.setAttribute("opacity", "1");
+        const route = gate ? ROUTE[int4 ? "lean" : "full"] : ROUTE.bypass;
+        sp.innerHTML = `<animateMotion dur="2.8s" repeatCount="indefinite" path="${route}"/>`;
+        // beginElement is missing on some engines; the static highlighted route still shows the result there.
+        const motion = sp.querySelector("animateMotion");
+        if (typeof motion.beginElement === "function") motion.beginElement();
+      }
+    }, reduceMotion ? 0 : delay);
+    $("#verdict").textContent = REASONS[cg.decision_reason] || ("Routed to " + cg.selected_precision.toUpperCase() + ".");
+  }
+
+  const log = [];
+  function renderReadouts(cg) {
+    const src = cg.measurement_source === "measured" ? "measured" : cg.measurement_source === "demo" ? "demo" : "estimated";
+    $("#s-energy").textContent = src; $("#s-co2").textContent = src;
+    countTo($("#r-energy"), cg.actual_energy_wh, 4, "Wh");
+    countTo($("#r-co2"), (cg.actual_co2_g ?? 0) * 1000, 2, "mg");
+    countTo($("#r-latency"), (cg.actual_latency_ms ?? 0) / 1000, 2, "s");
+    countTo($("#r-speed"), cg.tokens_per_second, 1, "tok/s");
+    countTo($("#r-power"), cg.avg_power_w, 1, "W");
+    countTo($("#r-vram"), cg.free_vram_mb, 0, "MB");
+    const meter = (id, v) => $(id).style.transform = `scaleX(${Math.max(0, Math.min(1, v || 0))})`;
+    meter("#m-energy", (cg.actual_energy_wh || 0) / .12);
+    meter("#m-co2", (cg.actual_co2_g || 0) * 1000 / 25);
+    meter("#m-vram", (cg.free_vram_mb || 0) / 4096);
+    $("#vram-note").textContent = cg.free_vram_mb != null ? "FP16 needs 3,200 MB free, INT4 needs 1,400 MB" : "";
+  }
+  function renderLog() {
+    const tb = $("#log");
+    if (!log.length) { tb.innerHTML = '<tr><td colspan="7" class="empty-state">No runs yet. Each prompt you run is logged here with its route, energy and CO₂.</td></tr>'; $("#log-total").textContent = ""; return; }
+    tb.innerHTML = log.map(r => `<tr><td class="mono" style="font-size:13px">${r.time}${r.example ? ' <span class="tag">example</span>' : ""}</td><td class="p" title="${esc(r.prompt)}">${esc(r.prompt)}</td><td>${modeBadge(r.p)}</td><td class="why">${esc(SHORT[r.reason] || r.reason)}</td><td class="n">${fmt(r.e, 4)}</td><td class="n">${fmt(r.co2, 2)}</td><td class="n">${fmt(r.l / 1000, 2)}</td></tr>`).join("");
+    const real = log.filter(r => !r.example), tot = real.reduce((a, r) => a + r.co2, 0);
+    $("#log-total").textContent = real.length ? `${real.length} run${real.length > 1 ? "s" : ""}, ${fmt(tot, 2)} mg CO₂ in total` : "";
+  }
+  function pushLog(req, cg, example = false, when = new Date()) {
+    log.unshift({ time: when.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }), prompt: req.prompt, p: cg.selected_precision, reason: cg.decision_reason, e: cg.actual_energy_wh, co2: (cg.actual_co2_g ?? 0) * 1000, l: cg.actual_latency_ms, example });
+    renderLog();
+  }
+
+  $("#tokens").addEventListener("input", e => $("#tokens-out").textContent = e.target.value);
+  $$(".chip[data-ex]").forEach(b => b.addEventListener("click", () => { $("#prompt").value = b.textContent; $("#task").value = b.dataset.ex; $("#prompt").focus(); }));
+  $("#prompt").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); $("#composer").requestSubmit(); } });
+
+  let timer = null;
+  $("#composer").addEventListener("submit", async e => {
+    e.preventDefault();
+    const prompt = $("#prompt").value.trim();
+    if (!prompt) { toast("Type a prompt first."); return; }
+    const lat = parseFloat($("#latency").value);
+    const req = { prompt, max_new_tokens: +$("#tokens").value, task_type: $("#task").value, latency_requirement_ms: lat > 0 ? lat : null };
+    const btn = $("#run-btn"); btn.disabled = true; btn.classList.add("busy"); $("#run-label").textContent = "Running";
+    resetCircuit(true); $("#route-id").textContent = "running";
+    $("#verdict").textContent = LIVE ? "Checking safety and grid carbon, then running the model. This usually takes 5 to 15 seconds." : "Simulating the route…";
+    const t0 = performance.now();
+    timer = setInterval(() => $("#run-status").textContent = ((performance.now() - t0) / 1000).toFixed(1) + " s", 100);
+    try {
+      let res;
+      if (LIVE) res = await api("/generate", { method: "POST", body: JSON.stringify(req) }, 130000);
+      else { await new Promise(r => setTimeout(r, 1200)); res = demoGenerate(req); }
+      const cg = res.carbon_grid;
+      drawCircuit(cg, req);
+      $("#answer").classList.remove("empty");
+      $("#answer").textContent = res.response || "The model returned an empty answer.";
+      $("#answer-meta").innerHTML = modeBadge(cg.selected_precision) + `<span class="mono">${esc(cg.request_id || "")}</span>`;
+      $("#route-id").textContent = "grid: " + (cg.carbon_source || "unknown");
+      renderReadouts(cg); pushLog(req, cg);
+      if (cg.carbon_intensity_gco2_per_kwh && LIVE) setGridNow(cg.carbon_intensity_gco2_per_kwh, cg.carbon_source || "live");
+    } catch (err) {
+      resetCircuit(false); $("#route-id").textContent = "failed";
+      const msg = err.name === "AbortError" ? "The server took too long to answer. Try a shorter answer length." : (err.message || "The request failed.");
+      $("#verdict").textContent = msg; toast(msg);
+    } finally {
+      clearInterval(timer); $("#run-status").textContent = ""; btn.disabled = false; btn.classList.remove("busy"); $("#run-label").textContent = "Run prompt";
+    }
+  });
+
+  /* Bars shared by the simulator and the results chart */
+  function bar(label, value, max, color, right, limitPct) {
+    const w = Math.max(.015, Math.min(1, value / max));
+    return `<div class="barrow"><span class="bl">${label}</span><div class="track"><div class="fill" style="--w:${w};background:${color}"></div>${limitPct != null ? `<div class="limit" style="left:${Math.min(100, limitPct)}%"></div>` : ""}</div><span class="bv">${right}</span></div>`;
+  }
+
+  let simTimer = null;
+  function runSim() {
+    const safety = +$("#sim-safety").value, carbon = +$("#sim-carbon").value, latv = +$("#sim-latency").value, profile = $("#sim-profile").value;
+    $("#sim-safety-out").textContent = safety.toFixed(2); $("#sim-carbon-out").textContent = carbon;
+    $("#sim-latency-out").textContent = latv ? fmt(latv / 1000, 1) + " s" : "None";
+    const d = decide({ safety, carbon, latencyReq: latv || null, profile });
+    const mode = $("#sim-mode"); mode.textContent = d.precision.toUpperCase(); mode.classList.toggle("int4", d.precision === "int4");
+    $("#sim-reason").textContent = REASONS[d.reason];
+    const maxCo2 = Math.max(d.fp16co2mg, d.int4co2mg, 1);
+    $("#sim-co2").innerHTML = bar("FP16", d.fp16co2mg, maxCo2 * 1.1, "var(--fp)", fmt(d.fp16co2mg, 2) + " mg") + bar("INT4", d.int4co2mg, maxCo2 * 1.1, "var(--brand)", fmt(d.int4co2mg, 2) + " mg");
+    const maxL = Math.max(d.P.int4.l, d.P.fp16.l, latv || 0) * 1.15, lp = latv ? latv * 1.1 / maxL * 100 : null;
+    $("#sim-lat").innerHTML = bar("FP16", d.P.fp16.l, maxL, "var(--fp)", fmt(d.P.fp16.l / 1000, 1) + " s", lp) + bar("INT4", d.P.int4.l, maxL, "var(--brand)", fmt(d.P.int4.l / 1000, 1) + " s", lp);
+    $("#sim-profile-note").textContent = profile === "phase05"
+      ? "In this profile INT4 uses slightly more energy than FP16 (0.0493 vs 0.0488 Wh), so CarbonGrid picks FP16 whenever there's no latency budget."
+      : "In this profile INT4 uses about 11% less energy than FP16 (0.0945 vs 0.1061 Wh), so prompts that pass the safety check go to INT4.";
+    $("#sim-confirm").textContent = LIVE ? "Checking with the decision engine on your machine…" : "Calculated in the browser using the decision engine's rules.";
+    if (LIVE) {
+      clearTimeout(simTimer);
+      simTimer = setTimeout(async () => {
+        try {
+          const P = PROFILES[profile];
+          const r = await api("/decision/test", { method: "POST", body: JSON.stringify({ safety_probability: safety, safety_threshold: .5, carbon_intensity_gco2_per_kwh: carbon, carbon_data_source: "simulated", fp16_estimated_energy_wh: P.fp16.e, int4_estimated_energy_wh: P.int4.e, fp16_estimated_latency_ms: P.fp16.l, int4_estimated_latency_ms: P.int4.l, latency_requirement_ms: latv || null }) });
+          $("#sim-confirm").textContent = r.selected_precision === d.precision ? "Confirmed by the decision engine on your machine." : "The engine on your machine picked " + String(r.selected_precision).toUpperCase() + " (" + (SHORT[r.decision_reason] || r.decision_reason) + ").";
+        } catch (e) { $("#sim-confirm").textContent = "Couldn't reach the decision engine (" + e.message + "). Showing the local calculation."; }
+      }, 350);
+    }
+  }
+  ["sim-safety", "sim-carbon", "sim-latency", "sim-profile"].forEach(id => $("#" + id).addEventListener("input", runSim));
+
+  const SOURCE_NAMES = { uk_carbon_intensity: "Carbon Intensity API (live)", replay: "Replay file", offline: "Offline fallback (fixed value)", demo: "Demo value" };
+  function renderGrid(status) {
+    const cur = status && status.current_carbon, g = cur ? cur.intensity_gco2_per_kwh : null;
+    countTo($("#g-num"), g, 0, "");
+    $("#g-pin").style.setProperty("--pos", Math.min(1, Math.max(0, (g ?? 0) / 500)) * 100 + "%");
+    if (g != null) {
+      const word = g < 100 ? "very clean" : g < 180 ? "fairly clean" : g < 260 ? "about average" : "carbon-heavy";
+      $("#g-means").textContent = `The grid is ${word} right now. One short FP16 answer (about 0.049 Wh) emits roughly ${fmt(PROFILES.phase05.fp16.e * g, 1)} mg of CO₂ at this level.`;
+      if (LIVE) setGridNow(g, cur.data_source === "uk_carbon_intensity" ? "live" : cur.data_source);
+    }
+    const src = cur ? cur.data_source : "–";
+    $("#g-badge").innerHTML = !cur ? '<span class="badge bad">No reading</span>' : cur.is_offline ? '<span class="badge warn">Offline fallback</span>' : cur.is_replay ? '<span class="badge warn">Replay</span>' : src === "demo" ? '<span class="badge muted">Demo value</span>' : cur.is_stale ? '<span class="badge warn">Stale</span>' : '<span class="badge ok">Live</span>';
+    const rows = cur ? [
+      ["Source", SOURCE_NAMES[src] || src], ["Region", cur.zone === "national" ? "Great Britain (national)" : cur.zone],
+      ["Reading type", cur.reading_type === "forecast" ? "Forecast" : "Actual"],
+      ["Reading for", cur.timestamp ? new Date(cur.timestamp).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" }) : "–"],
+      ["Fetched", cur.staleness_seconds != null ? ago(cur.staleness_seconds) : "–"],
+      ["Carbon mode", status.mode || "–"], ["Regions available", status.available_zones ? status.available_zones.length : "–"]
+    ] : [["Status", "No carbon reading is available. The decision engine will use 200 g/kWh."]];
+    $("#g-facts").innerHTML = rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
+  }
+  async function loadGrid() {
+    if (!LIVE) { renderGrid({ mode: "demo", available_zones: Array(14), current_carbon: { intensity_gco2_per_kwh: demoCarbon, zone: "national", reading_type: "actual", timestamp: new Date().toISOString(), data_source: "demo", staleness_seconds: 42, is_offline: false, is_replay: false } }); return; }
+    try { renderGrid(await api("/carbon/status", {}, 20000)); } catch (e) { renderGrid(null); toast("Couldn't load the grid reading: " + e.message); }
+  }
+  $("#grid-refresh").addEventListener("click", () => { if (!LIVE) demoCarbon = Math.round(110 + Math.random() * 220); loadGrid(); });
+
+  function renderFindings() {
+    const D = [
+      { k: "Always FP16", c: "var(--fp)", e: .04912, l: 5460, q: 1.0 },
+      { k: "Always INT4", c: "var(--brand)", e: .04974, l: 10523, q: .52 },
+      { k: "CarbonGrid", c: "var(--ink)", e: .04967, l: 5499, q: 1.0 }
+    ];
+    const block = (title, unit, key, max, dp, f = v => v) => `<div class="chart"><h4>${title}</h4><div class="bars">${D.map(d => bar(d.k, f(d[key]), max, d.c, fmt(f(d[key]), dp) + unit)).join("")}</div></div>`;
+    $("#cmp").innerHTML =
+      `<div class="legend">${D.map(d => `<span><i style="background:${d.c}"></i>${d.k}</span>`).join("")}</div>` +
+      block("Median energy per answer", " Wh", "e", .055, 4) +
+      block("Median response time", " s", "l", 11.5, 2, v => v / 1000) +
+      block("Average quality score (FP16 = 1.00)", "", "q", 1.05, 2) +
+      `<p class="note">Short-answer profile. Quality is an automatic similarity score against the FP16 answer, not a human rating.</p>`;
+  }
+
+  async function loadSystem() {
+    const facts = $("#sys-facts");
+    if (!LIVE) {
+      $("#sys-badge").innerHTML = '<span class="badge warn">Not connected</span>';
+      facts.innerHTML = [["Backend", "Not running. Start it with start_carbongrid.bat"], ["Model", "Qwen 2.5 1.5B Instruct"], ["Precisions", "FP16 (full) and INT4 (NF4)"], ["Safety check", "C.1.1 classifier, pass mark 0.50"], ["Grid data", "Carbon Intensity API, with replay and offline fallback"]].map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
+      return;
+    }
+    try {
+      const [h, c] = await Promise.all([api("/health"), api("/classifier/info").catch(() => ({}))]);
+      const inf = h.inference_provider_status || {};
+      $("#sys-badge").innerHTML = h.status === "healthy" ? '<span class="badge ok">Healthy</span>' : '<span class="badge warn">Degraded</span>';
+      const rows = [
+        ["API version", h.version], ["Safety classifier", h.classifier_loaded ? "Loaded" : "Not loaded"],
+        ["Classifier pass mark", c.threshold != null ? c.threshold.toFixed(2) : "–"],
+        ["Grid data mode", h.carbon_provider_mode], ["Model", inf.model_id || "Not initialised"],
+        ["Precision in memory", inf.current_precision ? inf.current_precision.toUpperCase() : inf.model_loaded ? "Loaded" : "None yet"],
+        ["GPU power sensor", inf.nvml_power_supported ? "Available, energy is measured" : "Unavailable, energy is estimated"],
+        ["GPU index", inf.device_index ?? "–"]
+      ];
+      facts.innerHTML = rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v ?? "–")}</dd>`).join("");
+    } catch (e) { $("#sys-badge").innerHTML = '<span class="badge bad">Unreachable</span>'; facts.innerHTML = `<dt>Error</dt><dd>${esc(e.message)}</dd>`; }
+  }
+
+  /* Console views */
+  const VIEWS = ["run", "simulate", "grid", "system"];
+  function show(v, scroll) {
+    if (!VIEWS.includes(v)) v = "run";
+    $$(".view").forEach(s => s.classList.toggle("on", s.id === "view-" + v));
+    $$(".seg-btn").forEach(t => { const on = t.dataset.view === v; t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1; });
+    if (v === "grid") loadGrid(); if (v === "system") loadSystem(); if (v === "simulate") runSim();
+    store.set("cg-view", v);
+    if (scroll) $("#console").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  }
+  function tabKeys(list, onPick) {
+    list.addEventListener("keydown", e => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      const tabs = $$("[role=tab]", list), i = tabs.indexOf(document.activeElement);
+      if (i < 0) return;
+      const next = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+      next.focus(); onPick(next); e.preventDefault();
+    });
+  }
+  $$(".seg-btn").forEach(t => t.addEventListener("click", () => { history.replaceState(null, "", "#" + t.dataset.view); show(t.dataset.view, false); }));
+  tabKeys($(".seg"), t => t.click());
+  // Anchors to a specific console view (hero, nav, footer) switch the view, then scroll to the console.
+  $$("[data-go]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); history.replaceState(null, "", "#" + a.dataset.go); show(a.dataset.go, true); }));
+
+  /* Code sample tabs and copy buttons */
+  function pickCode(t) {
+    $$(".code-tab").forEach(b => { const on = b === t; b.setAttribute("aria-selected", String(on)); b.tabIndex = on ? 0 : -1; $("#" + b.getAttribute("aria-controls")).hidden = !on; });
+  }
+  $$(".code-tab").forEach(t => t.addEventListener("click", () => pickCode(t)));
+  tabKeys($(".code-bar [role=tablist]"), pickCode);
+  $$("[data-copy],[data-copy-from]").forEach(b => b.addEventListener("click", async () => {
+    const text = b.dataset.copy ?? $(".code-window pre:not([hidden])").textContent.replace(/^\$ /, "");
+    try {
+      await navigator.clipboard.writeText(text);
+      b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy", 1600);
+    } catch (e) { toast("Couldn't copy to the clipboard. Select the text and copy it manually."); }
+  }));
+  $$("[data-docs]").forEach(a => {
+    if (API === null) { a.href = "#developers"; return; }
+    a.href = API + "/docs"; a.target = "_blank"; a.rel = "noopener";
+  });
+
+  /* Page chrome */
+  const nav = $("#nav");
+  const onScroll = () => nav.classList.toggle("scrolled", scrollY > 8);
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  if ("IntersectionObserver" in window && !reduceMotion) {
+    const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }), { rootMargin: "0px 0px -8% 0px", threshold: .08 });
+    $$("[data-reveal]").forEach(el => io.observe(el));
+  } else $$("[data-reveal]").forEach(el => el.classList.add("in"));
+
+  function seedExamples() {
+    const ex = [["What is the capital of Australia?", "factual"], ["Write a Python function to reverse a linked list.", "coding"], ["Summarise the causes of the 2008 financial crisis.", "summarization"]];
+    const now = Date.now();
+    ex.forEach(([p, t], i) => { const r = { prompt: p, task_type: t, max_new_tokens: 128, latency_requirement_ms: null }; pushLog(r, demoGenerate(r).carbon_grid, true, new Date(now - (3 - i) * 240000)); });
+    const first = { prompt: $("#prompt").value, task_type: "explanation", max_new_tokens: 128, latency_requirement_ms: null };
+    const res = demoGenerate(first);
+    drawCircuit(res.carbon_grid, first); renderReadouts(res.carbon_grid);
+    $("#route-id").textContent = "example";
+    $("#answer-meta").innerHTML = modeBadge(res.carbon_grid.selected_precision) + '<span class="tag">example</span>';
+    $("#answer").classList.remove("empty");
+    $("#answer").textContent = "Example answer. Press Run prompt to send your own.\n\nSunlight contains every colour, but air molecules scatter short blue wavelengths far more strongly than red ones. That scattered blue light reaches your eyes from every direction of the sky. Your eyes are also more sensitive to blue than violet, so the sky looks blue rather than purple.";
+  }
+  async function boot() {
+    renderFindings();
+    if (API !== null) {
+      try { await api("/health", {}, 3000); LIVE = true; setConn("live", "Live on your GPU"); }
+      catch (e) {
+        setConn("down", "Backend offline, demo data");
+        const retry = setInterval(async () => {
+          try { await api("/health", {}, 2500); clearInterval(retry); location.reload(); }
+          catch (err) { return; } // still offline; keep polling
+        }, 5000);
+      }
+    } else setConn("", "Preview, demo data");
+    if (!LIVE) { seedExamples(); setGridNow(demoCarbon, "simulated"); }
+    else {
+      renderLog();
+      api("/carbon/status", {}, 20000)
+        .then(s => { if (s.current_carbon) setGridNow(s.current_carbon.intensity_gco2_per_kwh, s.current_carbon.data_source === "uk_carbon_intensity" ? "live" : s.current_carbon.data_source); })
+        .catch(e => { setGridNow(demoCarbon, "simulated"); toast("Couldn't load the grid reading: " + e.message); });
+    }
+    startStream();
+    let start = location.hash.slice(1);
+    const fromHash = VIEWS.includes(start);
+    if (!fromHash) start = store.get("cg-view") || "run";
+    show(start, false);
+    if (fromHash) requestAnimationFrame(() => $("#console").scrollIntoView({ block: "start" }));
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

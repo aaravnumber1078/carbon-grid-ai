@@ -1,0 +1,398 @@
+{
+  "summary": {
+    "always_fp16": {
+      "latency_ms": {
+        "n": 182,
+        "mean": 5563.4075510955245,
+        "median": 5460.245850030333,
+        "std": 382.7552965071221,
+        "iqr": 318.1257500255015,
+        "p25": 5336.99652494397,
+        "p75": 5655.122274969472,
+        "p95": 6396.377234987447,
+        "min": 5113.192099961452,
+        "max": 8310.867300024256
+      },
+      "energy_wh": {
+        "n": 182,
+        "mean": 0.049626945054945054,
+        "median": 0.049123,
+        "std": 0.002086423625231867,
+        "iqr": 0.001847750000000009,
+        "p25": 0.048486249999999995,
+        "p75": 0.050334000000000004,
+        "p95": 0.053824149999999994,
+        "min": 0.046095,
+        "max": 0.061896
+      },
+      "co2_g": {
+        "n": 182,
+        "mean": 0.00992538901098901,
+        "median": 0.0098246,
+        "std": 0.00041728472504637355,
+        "iqr": 0.0003695500000000015,
+        "p25": 0.00969725,
+        "p75": 0.0100668,
+        "p95": 0.010764829999999998,
+        "min": 0.009219,
+        "max": 0.012379200000000002
+      },
+      "quality_score": {
+        "n": 182,
+        "mean": 1.0,
+        "median": 1.0,
+        "std": 0.0,
+        "iqr": 0.0,
+        "p25": 1.0,
+        "p75": 1.0,
+        "p95": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "selected_precision": {
+        "n": 0,
+        "mean": 0,
+        "median": 0,
+        "std": 0,
+        "iqr": 0,
+        "p25": 0,
+        "p75": 0,
+        "p95": null,
+        "min": 0,
+        "max": 0
+      },
+      "decision_reason": {
+        "n": 0,
+        "mean": 0,
+        "median": 0,
+        "std": 0,
+        "iqr": 0,
+        "p25": 0,
+        "p75": 0,
+        "p95": null,
+        "min": 0,
+        "max": 0
+      },
+      "fallback_used": {
+        "n": 0,
+        "mean": 0,
+        "median": 0,
+        "std": 0,
+        "iqr": 0,
+        "p25": 0,
+        "p75": 0,
+        "p95": null,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "always_int4": {
+      "latency_ms": {
+        "n": 182,
+        "mean": 10521.263597253583,
+        "median": 10522.57994998945,
+        "std": 392.27818811502345,
+        "iqr": 494.8419999855105,
+        "p25": 10272.136224986752,
+        "p75": 10766.978224972263,
+        "p95": 11148.824580013752,
+        "min": 9730.944199953228,
+        "max": 11941.279799910262
+      },
+      "energy_wh": {
+        "n": 182,
+        "mean": 0.049773516483516474,
+        "median": 0.0497395,
+        "std": 0.0008457438631448851,
+        "iqr": 0.0009700000000000056,
+        "p25": 0.04929325,
+        "p75": 0.05026325,
+        "p95": 0.0512278,
+        "min": 0.046099,
+        "max": 0.053045
+      },
+      "co2_g": {
+        "n": 182,
+        "mean": 0.009954703296703296,
+        "median": 0.009947899999999999,
+        "std": 0.0001691487726289771,
+        "iqr": 0.00019400000000000146,
+        "p25": 0.009858649999999998,
+        "p75": 0.01005265,
+        "p95": 0.01024556,
+        "min": 0.0092198,
+        "max": 0.010609
+      },
+      "quality_score": {
+        "n": 182,
+        "mean": 0.5184782678141916,
+        "median": 0.5959403149557236,
+        "std": 0.2663454063666204,
+        "iqr": 0.34247220436626663,
+        "p25": 0.3427347881336735,
+        "p75": 0.6852069924999401,
+        "p95": 0.8796571189165114,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "selected_precision": {
+        "n": 0,
+        "mean": 0,
+        "median": 0,
+        "std": 0,
+        "iqr": 0,
+        "p25": 0,
+        "p75": 0,
+        "p95": null,
+        "min": 0,
+        "max": 0
+      },
+      "decision_reason": {
+        "n": 0,
+        "mean": 0,
+        "median": 0,
+        "std": 0,
+        "iqr": 0,
+        "p25": 0,
+        "p75": 0,
+        "p95": null,
+        "min": 0,
+        "max": 0
+      },
+      "fallback_used": {
+        "n": 0,
+        "mean": 0,
+        "median": 0,
+        "std": 0,
+        "iqr": 0,
+        "p25": 0,
+        "p75": 0,
+        "p95": null,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "carbongrid": {
+      "latency_ms": {
+        "n": 182,
+        "mean": 5538.657373631665,
+        "median": 5499.486849992536,
+        "std": 259.511455328198,
+        "iqr": 196.24757501878776,
+        "p25": 5403.16407501814,
+        "p75": 5599.411650036927,
+        "p95": 5955.673710035626,
+        "min": 5023.237399989739,
+        "max": 7620.169000001624
+      },
+      "energy_wh": {
+        "n": 182,
+        "mean": 0.04976372527472527,
+        "median": 0.049673999999999996,
+        "std": 0.0013101164518771627,
+        "iqr": 0.001223999999999996,
+        "p25": 0.049036750000000004,
+        "p75": 0.05026075,
+        "p95": 0.052104349999999994,
+        "min": 0.04478,
+        "max": 0.056387
+      },
+      "co2_g": {
+        "n": 182,
+        "mean": 0.009952745054945056,
+        "median": 0.0099348,
+        "std": 0.00026202329037543253,
+        "iqr": 0.0002447999999999999,
+        "p25": 0.00980735,
+        "p75": 0.01005215,
+        "p95": 0.010420869999999999,
+        "min": 0.008956,
+        "max": 0.0112774
+      },
+      "quality_score": {
+        "n": 182,
+        "mean": 1.0,
+        "median": 1.0,
+        "std": 0.0,
+        "iqr": 0.0,
+        "p25": 1.0,
+        "p75": 1.0,
+        "p95": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "selected_precision": {
+        "n": 0,
+        "mean": 0,
+        "median": 0,
+        "std": 0,
+        "iqr": 0,
+        "p25": 0,
+        "p75": 0,
+        "p95": null,
+        "min": 0,
+        "max": 0
+      },
+      "decision_reason": {
+        "n": 0,
+        "mean": 0,
+        "median": 0,
+        "std": 0,
+        "iqr": 0,
+        "p25": 0,
+        "p75": 0,
+        "p95": null,
+        "min": 0,
+        "max": 0
+      },
+      "fallback_used": {
+        "n": 182,
+        "mean": 0.0,
+        "median": 0.0,
+        "std": 0.0,
+        "iqr": 0.0,
+        "p25": 0.0,
+        "p75": 0.0,
+        "p95": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "safety_probability": {
+        "n": 182,
+        "mean": 0.517900361758809,
+        "median": 0.5146608434795359,
+        "std": 0.15918560899848358,
+        "iqr": 0.2580141566046419,
+        "p25": 0.38350803223488283,
+        "p75": 0.6415221888395247,
+        "p95": 0.8075373524213127,
+        "min": 0.16945029507220077,
+        "max": 0.8930034113037365
+      }
+    }
+  },
+  "comparisons": {
+    "carbongrid_vs_always_fp16": {
+      "latency_ms": {
+        "test": "wilcoxon",
+        "n": 182,
+        "statistic": 8251.0,
+        "p_value": 0.9155166718521286,
+        "effect_size_r": 0.009067435296943538,
+        "median_difference": 8.798950002528727,
+        "direction": "x_greater",
+        "significant": "False"
+      },
+      "energy_wh": {
+        "test": "wilcoxon",
+        "n": 182,
+        "statistic": 7142.0,
+        "p_value": 0.09605125547417068,
+        "effect_size_r": 0.14225665045337177,
+        "median_difference": 0.0002530000000000032,
+        "direction": "x_greater",
+        "significant": "False"
+      },
+      "co2_g": {
+        "test": "wilcoxon",
+        "n": 182,
+        "statistic": 7142.0,
+        "p_value": 0.09605129649176711,
+        "effect_size_r": 0.14225665045337177,
+        "median_difference": 5.060000000000047e-05,
+        "direction": "x_greater",
+        "significant": "False"
+      },
+      "quality_score": {
+        "test": "wilcoxon",
+        "n": 182,
+        "skipped": "constant_identical_values",
+        "message": "Statistical test not applicable because both groups have constant identical values.",
+        "median_difference": 0.0,
+        "direction": "none"
+      },
+      "latency_ms_pct_change": 0.7186672732324902,
+      "latency_ms_median_diff": 39.240999962203205,
+      "energy_wh_pct_change": 1.121674164851487,
+      "energy_wh_median_diff": 0.0005509999999999959,
+      "co2_g_pct_change": 1.1216741648515083,
+      "co2_g_median_diff": 0.00011020000000000127,
+      "quality_score_pct_change": 0.0,
+      "quality_score_median_diff": 0.0
+    },
+    "carbongrid_vs_always_int4": {
+      "latency_ms": {
+        "test": "wilcoxon",
+        "n": 182,
+        "statistic": 0.0,
+        "p_value": 1.2848639155600436e-31,
+        "effect_size_r": 1.0,
+        "median_difference": -4999.900300055742,
+        "direction": "y_greater",
+        "significant": "True"
+      },
+      "energy_wh": {
+        "test": "wilcoxon",
+        "n": 182,
+        "statistic": 7995.0,
+        "p_value": 0.6413723629105047,
+        "effect_size_r": 0.03981264637002346,
+        "median_difference": -9.199999999999833e-05,
+        "direction": "y_greater",
+        "significant": "False"
+      },
+      "co2_g": {
+        "test": "wilcoxon",
+        "n": 182,
+        "statistic": 7995.0,
+        "p_value": 0.6413724040526924,
+        "effect_size_r": 0.03981264637002346,
+        "median_difference": -1.8400000000000014e-05,
+        "direction": "y_greater",
+        "significant": "False"
+      },
+      "quality_score": {
+        "test": "wilcoxon",
+        "n": 182,
+        "statistic": 0.0,
+        "p_value": 2.6963427905682305e-31,
+        "effect_size_r": 1.0,
+        "median_difference": 0.4040596850442764,
+        "direction": "x_greater",
+        "significant": "True"
+      },
+      "latency_ms_pct_change": -47.73632629896958,
+      "latency_ms_median_diff": -5023.093099996913,
+      "energy_wh_pct_change": -0.13168608450025243,
+      "energy_wh_median_diff": -6.550000000000306e-05,
+      "co2_g_pct_change": -0.1316860845002315,
+      "co2_g_median_diff": -1.309999999999853e-05,
+      "quality_score_pct_change": 67.80203904719832,
+      "quality_score_median_diff": 0.40405968504427636
+    },
+    "carbongrid_selection": {
+      "precision_distribution": {
+        "fp16": 182,
+        "int4": 0
+      },
+      "decision_reasons": {
+        "fp16_lower_environmental_cost": 95,
+        "safety_gate_failed": 87
+      },
+      "fallback_rate": 0.0,
+      "avg_safety_prob": 0.517900361758809
+    }
+  },
+  "metadata": {
+    "policies_compared": [
+      "always_fp16",
+      "always_int4",
+      "carbongrid"
+    ],
+    "total_records_per_policy": {
+      "always_fp16": 182,
+      "always_int4": 182,
+      "carbongrid": 182
+    }
+  }
+}

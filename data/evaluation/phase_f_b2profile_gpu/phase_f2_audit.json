@@ -1,0 +1,241 @@
+{
+  "audit_metadata": {
+    "experiment": "Phase F.2 Measurement Audit",
+    "timestamp": "2026-10-03T00:00:00Z",
+    "auditor": "automated",
+    "f2_results_path": "data/evaluation/phase_f_b2profile_gpu/phase_f_raw_results.json",
+    "frozen_results_path": "data/evaluation/phase_f/phase_f_raw_results.json",
+    "frozen_analysis_path": "data/evaluation/phase_f/phase_f_analysis.json",
+    "pilot_results_path": "data/evaluation/phase_g/pilot_results.json"
+  },
+  "data_integrity": {
+    "status": "PASS",
+    "f2_records": 182,
+    "frozen_cg_records": 182,
+    "frozen_fp16_records": 182,
+    "frozen_int4_records": 182,
+    "matched_prompts": 182,
+    "unique_prompt_ids": 182,
+    "missing_values": {
+      "energy_wh": 0,
+      "latency_ms": 0,
+      "avg_power_w": 0
+    },
+    "non_finite_values": {
+      "energy_wh": 0,
+      "latency_ms": 0
+    },
+    "failed_runs": 0,
+    "duplicate_prompt_ids": 0,
+    "frozen_files_unmodified": true,
+    "frozen_raw_mtime": 1790433403.3258607,
+    "frozen_analysis_mtime": 1790433517.3648376
+  },
+  "paired_comparisons": {
+    "energy_wh": {
+      "f2_vs_frozen_cg": {
+        "n": 182,
+        "mean_diff": -0.001917631868131868,
+        "median_diff": -0.001446,
+        "std_diff": 0.002431283950562044,
+        "increased": 36,
+        "decreased": 146,
+        "equal": 0,
+        "wilcoxon": {
+          "statistic": 1729.5,
+          "p_value": 1.8745943092086368e-20,
+          "significant": true
+        },
+        "bootstrap_ci_95": [-0.001732, -0.001258]
+      },
+      "f2_vs_frozen_fp16": {
+        "n": 182,
+        "mean_diff": -0.0017808516483516486,
+        "median_diff": -0.001237,
+        "std_diff": 0.0025626316228096048,
+        "increased": 43,
+        "decreased": 139,
+        "equal": 0,
+        "wilcoxon": {
+          "statistic": 2079.0,
+          "p_value": 1.6614440825151353e-18,
+          "significant": true
+        },
+        "bootstrap_ci_95": [-0.001636, -0.000803]
+      },
+      "f2_vs_frozen_int4": {
+        "n": 182,
+        "mean_diff": -0.0019274230769230768,
+        "median_diff": -0.0015435,
+        "std_diff": 0.002312192186977493,
+        "increased": 33,
+        "decreased": 149,
+        "equal": 0,
+        "wilcoxon": {
+          "statistic": 1642.5,
+          "p_value": 5.915675806188512e-21,
+          "significant": true
+        },
+        "bootstrap_ci_95": [-0.001767, -0.001108]
+      }
+    },
+    "latency_ms": {
+      "f2_vs_frozen_cg": {
+        "n": 182,
+        "mean_diff": 2653.37,
+        "median_diff": 4344.42,
+        "std_diff": 2580.82,
+        "wilcoxon": {
+          "statistic": 1996.0,
+          "p_value": 5.85e-19,
+          "significant": true
+        },
+        "bootstrap_ci_95": [281.8, 4689.7]
+      },
+      "f2_vs_frozen_fp16": {
+        "n": 182,
+        "mean_diff": 2628.62,
+        "median_diff": 4295.32,
+        "std_diff": 2584.20,
+        "wilcoxon": {
+          "statistic": 1694.0,
+          "p_value": 1.17e-20,
+          "significant": true
+        },
+        "bootstrap_ci_95": [413.1, 4593.7]
+      },
+      "f2_vs_frozen_int4": {
+        "n": 182,
+        "mean_diff": -2329.23,
+        "median_diff": -886.97,
+        "std_diff": 2609.13,
+        "wilcoxon": {
+          "statistic": 2825.0,
+          "p_value": 1.08e-14,
+          "significant": true
+        },
+        "bootstrap_ci_95": [-4279.1, -429.5]
+      }
+    }
+  },
+  "energy_discrepancy": {
+    "phase_g_pilot_fp16_wh": 0.4298,
+    "phase_g_pilot_int4_wh": 0.4658,
+    "phase_f2_fp16_wh": 0.0473,
+    "phase_f2_int4_wh": 0.0484,
+    "ratio": 9.1,
+    "root_cause": "Phase G pilot median output tokens=1000 vs Phase F.2 median=128 (8-9x difference); max_tokens=2000 vs 128"
+  },
+  "decision_distribution": {
+    "total_prompts": 182,
+    "int4_selected": 95,
+    "fp16_selected": 87,
+    "int4_pct": 52.2,
+    "fp16_pct": 47.8,
+    "decision_reasons": {
+      "int4_lower_environmental_cost": 95,
+      "safety_gate_failed": 87
+    },
+    "safety_gate": {
+      "passed": 95,
+      "failed": 87,
+      "pass_rate": 0.522,
+      "int4_selected_avg_safety_prob": 0.645,
+      "c11_test_set_false_safe_rate": 0.40
+    },
+    "safety_failures_by_task": {
+      "coding": {"failed": 26, "total": 26, "rate": 1.0},
+      "extraction": {"failed": 17, "total": 20, "rate": 0.85},
+      "reasoning": {"failed": 16, "total": 22, "rate": 0.727},
+      "creative": {"failed": 14, "total": 22, "rate": 0.636},
+      "factual": {"failed": 6, "total": 24, "rate": 0.25},
+      "summarization": {"failed": 2, "total": 22, "rate": 0.091},
+      "scientific": {"failed": 3, "total": 24, "rate": 0.125}
+    }
+  },
+  "quality_proxy": {
+    "fp16_selected": {
+      "n": 87,
+      "mean": 1.0,
+      "median": 1.0,
+      "std": 0.0,
+      "method": "reference_convention"
+    },
+    "int4_selected": {
+      "n": 95,
+      "mean": 0.6567,
+      "median": 0.6555,
+      "std": 0.1424,
+      "methods": [
+        "factual_semantic_entity",
+        "extraction_exact_field_value",
+        "explanation_semantic_structure_concept",
+        "reasoning_semantic_answer_logic",
+        "summarization_semantic_length_concept",
+        "scientific_semantic_concept",
+        "creative_semantic_proxy"
+      ],
+      "note": "Proxy metrics (semantic similarity, entity match, structural comparison) not human-evaluated quality"
+    }
+  },
+  "co2_estimates": {
+    "carbon_intensity_gco2_per_kwh": 200.0,
+    "source": "offline fallback",
+    "formula": "CO2_g = energy_Wh * carbon_intensity_gco2_per_kwh / 1000",
+    "formula_verified": true,
+    "estimated_co2": {
+      "fp16_g": 0.02122,
+      "int4_g": 0.01890,
+      "int4_lower_by_g": 0.00232
+    },
+    "measured_co2": {
+      "overall_median_g": 0.00967,
+      "int4_selected_median_g": 0.00973,
+      "fp16_selected_median_g": 0.00959
+    },
+    "note": "All CO2 values are estimates from measured energy × offline carbon intensity. Not direct emissions measurements."
+  },
+  "measurement_protocol": {
+    "nvml_sampling_interval_ms": 20,
+    "warmup_runs_discarded": 3,
+    "gpu_synchronization": true,
+    "model_unloaded_between_configs": true,
+    "model_loading_energy_excluded": true,
+    "power_calculation": "avg_power_w * (num_samples * sample_interval_s) / 3600",
+    "energy_unit": "Wh",
+    "power_unit": "Watts",
+    "latency_unit": "ms"
+  },
+  "unresolved_issues": [
+    "Output length generalizability: max_tokens=128 limits applicability to longer generations",
+    "Quality proxy validity: semantic similarity proxy (median 0.66) may not reflect human quality",
+    "Safety false-safe rate: 40% on C.1.1 test set; actual rate for these 95 INT4 prompts unknown",
+    "Carbon intensity: single offline fallback (200 gCO2/kWh) for all prompts",
+    "Short generations: 128-token limit yields small absolute energy differences (~0.001 Wh)",
+    "No INT4 coding prompts: 0/26 routed to INT4 due to safety gate",
+    "Safety false-safe rate for these specific 95 INT4 prompts is unknown"
+  ],
+  "audit_status": "PASS WITH LIMITATIONS",
+  "files_read": [
+    "data/evaluation/phase_f_b2profile_gpu/phase_f_raw_results.json",
+    "data/evaluation/phase_f_b2profile_gpu/phase_f2_analysis.json",
+    "data/evaluation/phase_f/phase_f_raw_results.json",
+    "data/evaluation/phase_f/phase_f_analysis.json",
+    "data/evaluation/phase_g/pilot_results.json",
+    "scripts/analyze_phase_f2.py",
+    "scripts/analyze_phase_f.py",
+    "scripts/run_phase_f.py",
+    "carbongrid/inference/provider.py"
+  ],
+  "files_created": [
+    "scripts/audit_phase_f2.py",
+    "data/evaluation/phase_f_b2profile_gpu/PHASE_F2_AUDIT_REPORT.md",
+    "data/evaluation/phase_f_b2profile_gpu/phase_f2_audit.json"
+  ],
+  "hackathon_recommendation": {
+    "headline_energy_savings": false,
+    "headline_quality": false,
+    "headline_safety": false,
+    "recommended_framing": "Present as sensitivity experiment: with B2 workload profile (INT4 lower energy), CarbonGrid routes 52% to INT4 achieving ~2-3% measured energy reduction for 128-token generations. INT4 quality proxy median 0.66 vs FP16 reference. Safety gate blocks 48% of prompts; C.1.1 classifier has 40% false-safe rate. Results specific to 128-token generations."
+  }
+}

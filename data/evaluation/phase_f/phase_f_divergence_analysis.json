@@ -1,0 +1,164 @@
+{
+  "divergence_case_count": 74,
+  "total_cg_runs": 182,
+  "divergence_percentage": 40.65934065934066,
+  "decision_time_estimates": {
+    "fp16_energy_wh": {
+      "n": 74,
+      "mean": 0.0488,
+      "median": 0.0488,
+      "std": 0.0,
+      "iqr": 0.0,
+      "p25": 0.0488,
+      "p75": 0.0488,
+      "min": 0.0488,
+      "max": 0.0488
+    },
+    "int4_energy_wh": {
+      "n": 74,
+      "mean": 0.04930000000000001,
+      "median": 0.0493,
+      "std": 1.397251783453914e-17,
+      "iqr": 0.0,
+      "p25": 0.0493,
+      "p75": 0.0493,
+      "min": 0.0493,
+      "max": 0.0493
+    }
+  },
+  "posthoc_measured": {
+    "fp16_energy_wh": {
+      "n": 74,
+      "mean": 0.05123859459459459,
+      "median": 0.050575499999999995,
+      "std": 0.002302771837322339,
+      "iqr": 0.0018132500000000093,
+      "p25": 0.049853499999999995,
+      "p75": 0.051666750000000004,
+      "min": 0.048496,
+      "max": 0.061896
+    },
+    "int4_energy_wh": {
+      "n": 74,
+      "mean": 0.04932533783783784,
+      "median": 0.049444,
+      "std": 0.0007051927216818598,
+      "iqr": 0.0008784999999999973,
+      "p25": 0.048911750000000004,
+      "p75": 0.04979025,
+      "min": 0.046099,
+      "max": 0.050668
+    },
+    "diff_wh": {
+      "n": 74,
+      "mean": -0.001913256756756757,
+      "median": -0.0012159999999999983,
+      "std": 0.0023335617028148476,
+      "iqr": 0.0018962499999999986,
+      "p25": -0.0023409999999999976,
+      "p75": -0.00044474999999999897,
+      "min": -0.013722999999999999,
+      "max": -1.6999999999996185e-05
+    },
+    "pct_diff": {
+      "n": 74,
+      "mean": -3.5666763910856596,
+      "median": -2.389168671704037,
+      "std": 3.988535726379417,
+      "iqr": 3.7045623429263577,
+      "p25": -4.58736452926324,
+      "p75": -0.8828021863368829,
+      "min": -22.17106113480677,
+      "max": -0.03462815472673535
+    }
+  },
+  "co2_difference": {
+    "carbon_intensity_gco2_per_kwh": 200.0,
+    "diff_g": {
+      "n": 74,
+      "mean": -0.0003826513513513514,
+      "median": -0.00024319999999999965,
+      "std": 0.00046671234056296947,
+      "iqr": 0.0003792499999999997,
+      "p25": -0.0004681999999999995,
+      "p75": -8.894999999999979e-05,
+      "min": -0.0027446,
+      "max": -3.399999999999237e-06
+    }
+  },
+  "breakdowns": {
+    "by_task_type": {
+      "factual": 2,
+      "explanation": 3,
+      "reasoning": 4,
+      "coding": 14,
+      "summarization": 20,
+      "scientific": 16,
+      "creative": 15
+    },
+    "by_complexity": {
+      "1": 21,
+      "2": 16,
+      "3": 24,
+      "4": 13
+    },
+    "by_b2_safe": {
+      "True": 47,
+      "False": 27
+    },
+    "by_decision_reason": {
+      "fp16_lower_environmental_cost": 46,
+      "safety_gate_failed": 28
+    }
+  },
+  "safety_probability": {
+    "stats": {
+      "n": 74,
+      "mean": 0.5574273957142094,
+      "median": 0.5706301309298965,
+      "std": 0.1744175312648983,
+      "iqr": 0.2657975728444541,
+      "p25": 0.41700241668830956,
+      "p75": 0.6827999895327637,
+      "min": 0.16945029507220077,
+      "max": 0.8930034113037365
+    },
+    "bins": {
+      "<0.40": 18,
+      "0.40-0.49": 10,
+      "0.50-0.59": 13,
+      "0.60-0.69": 17,
+      ">=0.70": 16
+    }
+  },
+  "statistical_tests": {
+    "safety_probability": {
+      "divergence_mean": 0.5574273957142094,
+      "divergence_median": 0.5706301309298965,
+      "non_divergence_mean": 0.49081702367825697,
+      "non_divergence_median": 0.47355598784655534,
+      "t_statistic": 2.7217072535326823,
+      "p_value": 0.007347189578565288,
+      "cohens_d": 0.41831846794238886,
+      "significant": "True"
+    },
+    "posthoc_energy_diff": {
+      "divergence_mean_wh": -0.001913256756756757,
+      "non_divergence_mean_wh": 0.0015579351851851856,
+      "t_statistic": -11.739305713985518,
+      "p_value": 1.463248969104987e-20,
+      "cohens_d": -1.8633383269613968,
+      "significant": "True"
+    }
+  },
+  "interpretation": {
+    "energy_differences_tiny": true,
+    "mean_abs_diff_wh": 0.001913256756756757,
+    "median_abs_diff_wh": 0.0012159999999999983,
+    "divergences_near_threshold": true,
+    "threshold_proximity_pct": 51.35135135135135,
+    "task_type_dominant": false,
+    "static_profile_adequate": false,
+    "limitation": "CarbonGrid's decision-time energy estimates (Phase 0.5 static profile) do not match post-hoc measured energy for the B2 workload. In 74/182 cases (40.7%), the static profile favored FP16 while actual INT4 energy was lower. The mean energy difference in these cases is -0.0019 Wh (INT4 lower), representing a 3.6% difference. However, the safety gate (threshold=0.50) correctly prevented INT4 selection in 10/74 divergent cases. The classifier's 40% false-safe rate on the held-out test set limits confidence in these routing decisions. Energy savings claims require request-level energy prediction, not static profiles."
+  }
+}

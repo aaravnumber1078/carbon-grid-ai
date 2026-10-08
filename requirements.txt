@@ -1,0 +1,27 @@
+# Core ML / Inference
+torch==2.7.1+cu118
+transformers==5.5.0
+bitsandbytes==0.49.2
+accelerate==1.13.0
+
+# API / Server
+fastapi==0.141.1
+uvicorn[standard]==0.54.0
+pydantic==2.12.4
+pydantic-settings==2.10.1
+
+# Carbon / HTTP
+requests==2.32.5
+urllib3==2.3.0
+
+# ML / Data
+scikit-learn==1.7.2
+numpy==2.3.5
+pandas==2.3.3
+joblib==1.5.2
+
+# GPU Monitoring
+nvidia-ml-py==12.560.30
+
+# Utilities
+python-dotenv==1.0.1

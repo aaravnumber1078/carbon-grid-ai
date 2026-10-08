@@ -1,0 +1,372 @@
+#!/usr/bin/env python3
+"""
+Phase B2: Generate 300-500 diverse prompts with complexity stratification.
+
+Each task category has prompts at 4 complexity levels:
+1 = easy, 2 = moderate, 3 = hard, 4 = very hard
+"""
+
+import json
+from pathlib import Path
+from dataclasses import dataclass, asdict
+from typing import List
+from collections import Counter
+
+
+@dataclass
+class Prompt:
+    prompt_id: str
+    prompt: str
+    task_type: str
+    subcategory: str
+    complexity_level: int  # 1=easy, 2=moderate, 3=hard, 4=very hard
+    reference_answer: str = ""
+
+
+def create_factual_prompts() -> List[Prompt]:
+    """Factual Q&A with complexity stratification."""
+    return [
+        # Easy (1)
+        Prompt("fact_01", "What is the capital of Japan?", "factual", "geography", 1, "Tokyo"),
+        Prompt("fact_02", "Who painted the Mona Lisa?", "factual", "art", 1, "Leonardo da Vinci"),
+        Prompt("fact_03", "What is the chemical symbol for silver?", "factual", "chemistry", 1, "Ag"),
+        Prompt("fact_04", "In what year did World War II end?", "factual", "history", 1, "1945"),
+        Prompt("fact_05", "What is the largest ocean on Earth?", "factual", "geography", 1, "Pacific Ocean"),
+        Prompt("fact_06", "Who wrote Romeo and Juliet?", "factual", "literature", 1, "William Shakespeare"),
+        Prompt("fact_07", "What is the boiling point of water at sea level in Celsius?", "factual", "physics", 1, "100°C"),
+        
+        # Moderate (2)
+        Prompt("fact_08", "What is the difference between mitosis and meiosis?", "factual", "biology", 2, "Mitosis produces 2 identical diploid cells; meiosis produces 4 genetically diverse haploid cells"),
+        Prompt("fact_09", "Name the three branches of the US federal government.", "factual", "civics", 2, "Legislative, Executive, Judicial"),
+        Prompt("fact_10", "What are the four fundamental forces of nature?", "factual", "physics", 2, "Gravity, electromagnetism, strong nuclear, weak nuclear"),
+        Prompt("fact_11", "Which planet has the most moons in our solar system?", "factual", "astronomy", 2, "Saturn (146 confirmed moons)"),
+        Prompt("fact_12", "What is the difference between a virus and a bacterium?", "factual", "biology", 2, "Viruses are non-living, require host cells; bacteria are single-celled living organisms"),
+        Prompt("fact_13", "What are the primary greenhouse gases?", "factual", "environment", 2, "CO2, methane, nitrous oxide, water vapor"),
+        Prompt("fact_14", "Who developed the periodic table?", "factual", "chemistry", 2, "Dmitri Mendeleev"),
+        
+        # Hard (3)
+        Prompt("fact_15", "Explain the difference between DNA replication and transcription.", "factual", "biology", 3, "Replication copies entire DNA for cell division; transcription copies specific genes into RNA"),
+        Prompt("fact_16", "What is the Heisenberg Uncertainty Principle and its significance?", "factual", "physics", 3, "Cannot simultaneously know exact position and momentum of a particle; fundamental quantum limit"),
+        Prompt("fact_17", "Describe the CRISPR-Cas9 mechanism for gene editing.", "factual", "biology", 3, "Guide RNA targets DNA sequence; Cas9 nuclease cuts DNA at target; cell repair mechanisms enable editing"),
+        Prompt("fact_18", "What causes the seasons on Earth?", "factual", "astronomy", 3, "Axial tilt (23.5°) causes varying solar angle and day length throughout orbit"),
+        Prompt("fact_19", "How do mRNA vaccines work at the molecular level?", "factual", "medicine", 3, "mRNA encodes spike protein; cells produce protein; immune system recognizes and builds immunity"),
+        Prompt("fact_20", "What is the difference between Type 1 and Type 2 diabetes?", "factual", "medicine", 3, "Type 1: autoimmune destruction of beta cells; Type 2: insulin resistance and relative deficiency"),
+        
+        # Very Hard (4)
+        Prompt("fact_21", "Given a mutation in DNA polymerase proofreading domain, explain the expected effects on replication fidelity and mutation spectrum.", "factual", "biology", 4, ""),
+        Prompt("fact_22", "How does the Higgs mechanism give mass to elementary particles in the Standard Model?", "factual", "physics", 4, ""),
+        Prompt("fact_23", "Explain the mechanism of action of immune checkpoint inhibitors in cancer immunotherapy.", "factual", "medicine", 4, ""),
+        Prompt("fact_24", "Describe the molecular basis of antibiotic resistance via beta-lactamase production.", "factual", "biology", 4, ""),
+    ]
+
+
+def create_extraction_prompts() -> List[Prompt]:
+    """Information extraction with complexity stratification."""
+    return [
+        # Easy (1)
+        Prompt("ext_01", "Extract the company name and founding year: 'Google was founded in 1998 by Larry Page and Sergey Brin.'", "extraction", "business", 1, "Company: Google, Founded: 1998"),
+        Prompt("ext_02", "From the text, identify the person and their role: 'Dr. Sarah Chen is the Chief Technology Officer at TechCorp.'", "extraction", "business", 1, "Person: Dr. Sarah Chen, Role: Chief Technology Officer"),
+        Prompt("ext_03", "Extract the date and event: 'The conference will be held on March 15, 2024 in San Francisco.'", "extraction", "events", 1, "Date: March 15, 2024, Event: Conference, Location: San Francisco"),
+        Prompt("ext_04", "Identify the product and price: 'The new iPhone 15 costs $799.'", "extraction", "product", 1, "Product: iPhone 15, Price: $799"),
+        Prompt("ext_05", "From this sentence, extract the country and capital: 'Paris is the capital city of France.'", "extraction", "geography", 1, "Country: France, Capital: Paris"),
+        Prompt("ext_06", "Extract the medical condition and treatment: 'The patient was diagnosed with hypertension and prescribed lisinopril.'", "extraction", "medical", 1, "Condition: hypertension, Treatment: lisinopril"),
+        
+        # Moderate (2)
+        Prompt("ext_07", "From the paragraph, extract all person names, their titles, and organizations: 'John Smith, VP of Engineering at Acme Corp, and Jane Doe, CTO at Beta Inc, announced the merger.'", "extraction", "business", 2, "Persons: John Smith (VP of Engineering, Acme Corp), Jane Doe (CTO, Beta Inc)"),
+        Prompt("ext_08", "Extract the symptoms, diagnosis, and medications: 'Patient presents with fever, cough, and shortness of breath. Diagnosed with COVID-19. Prescribed Paxlovid and acetaminophen.'", "extraction", "medical", 2, "Symptoms: fever, cough, shortness of breath; Diagnosis: COVID-19; Medications: Paxlovid, acetaminophen"),
+        Prompt("ext_09", "Identify the financial metrics: 'Q3 revenue was $2.4B, up 15% YoY. Net income reached $400M with EPS of $1.20.'", "extraction", "finance", 2, "Revenue: $2.4B (+15% YoY), Net Income: $400M, EPS: $1.20"),
+        Prompt("ext_10", "Extract the technical specifications: 'The server has 64GB RAM, 2TB NVMe SSD, AMD EPYC 7742 CPU, and runs Ubuntu 22.04.'", "extraction", "technical", 2, "RAM: 64GB, Storage: 2TB NVMe SSD, CPU: AMD EPYC 7742, OS: Ubuntu 22.04"),
+        Prompt("ext_11", "From the legal text, extract the parties, effective date, and termination clause: 'This Agreement between Alpha Ltd and Beta Corp, effective January 1, 2024, may be terminated by either party with 30 days written notice.'", "extraction", "legal", 2, "Parties: Alpha Ltd, Beta Corp; Effective: January 1, 2024; Termination: 30 days written notice"),
+        Prompt("ext_12", "Extract the algorithm, time complexity, and space complexity: 'We use merge sort with O(n log n) time and O(n) space complexity.'", "extraction", "technical", 2, "Algorithm: merge sort, Time: O(n log n), Space: O(n)"),
+        
+        # Hard (3)
+        Prompt("ext_13", "From the research abstract, extract: hypothesis, methodology, sample size, key findings, and conclusion. 'We hypothesized that sleep deprivation impairs working memory. Using a within-subjects design with 40 participants...'", "extraction", "scientific", 3, ""),
+        Prompt("ext_14", "Parse the JSON configuration and extract: database host, port, username, and SSL setting. '{\"db\": {\"host\": \"prod-db-1\", \"port\": 5432, \"user\": \"app_user\", \"ssl\": true}}'", "extraction", "technical", 3, "Host: prod-db-1, Port: 5432, User: app_user, SSL: true"),
+        Prompt("ext_15", "Extract all entities and relationships: 'Apple acquired Beats Electronics for $3 billion in 2014. Dr. Dre and Jimmy Iovine founded Beats in 2006.'", "extraction", "business", 3, "Entities: Apple (acquirer), Beats Electronics (target), Dr. Dre (founder), Jimmy Iovine (founder); Relations: Apple acquired Beats ($3B, 2014), Dr. Dre founded Beats (2006), Jimmy Iovine founded Beats (2006)"),
+        Prompt("ext_16", "From the error log, extract: timestamp, error code, component, and root cause. '[2024-01-15 14:32:11] ERROR [PaymentService] ERR_TIMEOUT: Database connection pool exhausted after 30s'", "extraction", "technical", 3, "Timestamp: 2024-01-15 14:32:11, Error: ERR_TIMEOUT, Component: PaymentService, Cause: Database connection pool exhausted"),
+        
+        # Very Hard (4)
+        Prompt("ext_17", "From the clinical trial report, extract: study design, inclusion/exclusion criteria, primary endpoint, statistical method, p-value, and adverse events. 'A randomized, double-blind, placebo-controlled Phase 3 trial enrolled 1,200 patients...'", "extraction", "medical", 4, ""),
+        Prompt("ext_18", "Parse the Kubernetes YAML and extract: all container images, resource limits, environment variables, and volume mounts across all pods.", "extraction", "technical", 4, ""),
+        Prompt("ext_19", "From the financial statement, extract: all line items for revenue, COGS, operating expenses, and calculate gross margin and operating margin.", "extraction", "finance", 4, ""),
+        Prompt("ext_20", "Extract the complete dependency graph from the package.json including transitive dependencies, versions, and license types.", "extraction", "technical", 4, ""),
+    ]
+
+
+def create_explanation_prompts() -> List[Prompt]:
+    """Explanation with complexity stratification."""
+    return [
+        # Easy (1)
+        Prompt("expl_01", "Explain the difference between a laptop and a desktop computer.", "explanation", "technology", 1, ""),
+        Prompt("expl_02", "What is the difference between WiFi and Ethernet?", "explanation", "networking", 1, ""),
+        Prompt("expl_03", "Explain what a browser does.", "explanation", "technology", 1, ""),
+        Prompt("expl_04", "What is the difference between HTTP and HTTPS?", "explanation", "networking", 1, ""),
+        Prompt("expl_05", "Explain what an operating system does.", "explanation", "software", 1, ""),
+        Prompt("expl_06", "What is the difference between RAM and storage?", "explanation", "hardware", 1, ""),
+        
+        # Moderate (2)
+        Prompt("expl_07", "Explain the difference between a compiler and an interpreter with examples.", "explanation", "programming", 2, ""),
+        Prompt("expl_08", "How does public-key cryptography work? Explain with a simple analogy.", "explanation", "security", 2, ""),
+        Prompt("expl_09", "What are the key differences between SQL and NoSQL databases?", "explanation", "databases", 2, ""),
+        Prompt("expl_10", "Explain how Docker containers differ from virtual machines.", "explanation", "devops", 2, ""),
+        Prompt("expl_11", "How does a CPU cache improve performance?", "explanation", "hardware", 2, ""),
+        Prompt("expl_12", "What is REST API and how does it differ from GraphQL?", "explanation", "web", 2, ""),
+        
+        # Hard (3)
+        Prompt("expl_13", "Explain how garbage collection works in modern programming languages like Java or Go.", "explanation", "programming", 3, ""),
+        Prompt("expl_14", "How does the TLS handshake establish a secure connection?", "explanation", "security", 3, ""),
+        Prompt("expl_15", "Explain the CAP theorem and its implications for distributed systems design.", "explanation", "distributed_systems", 3, ""),
+        Prompt("expl_16", "How does a database query optimizer choose an execution plan?", "explanation", "databases", 3, ""),
+        Prompt("expl_17", "Explain how branch prediction works in modern CPUs.", "explanation", "hardware", 3, ""),
+        Prompt("expl_18", "How does consistent hashing enable distributed caching?", "explanation", "distributed_systems", 3, ""),
+        
+        # Very Hard (4)
+        Prompt("expl_19", "Explain the implementation challenges of a lock-free concurrent hash map with linearizable operations.", "explanation", "concurrency", 4, ""),
+        Prompt("expl_20", "How does the Raft consensus algorithm handle leader election, log replication, and membership changes?", "explanation", "distributed_systems", 4, ""),
+        Prompt("expl_21", "Explain how a just-in-time compiler optimizes hot code paths including inline caching and speculative optimization.", "explanation", "compilers", 4, ""),
+        Prompt("expl_22", "Describe how a modern database storage engine implements MVCC with snapshot isolation.", "explanation", "databases", 4, ""),
+    ]
+
+
+def create_reasoning_prompts() -> List[Prompt]:
+    """Reasoning with complexity stratification."""
+    return [
+        # Easy (1)
+        Prompt("reas_01", "If all birds have feathers, and a robin is a bird, does a robin have feathers?", "reasoning", "logic", 1, "Yes"),
+        Prompt("reas_02", "John is taller than Mary. Mary is taller than Sue. Who is tallest?", "reasoning", "logic", 1, "John"),
+        Prompt("reas_03", "If it rains, the ground gets wet. The ground is wet. Did it rain?", "reasoning", "logic", 1, "Not necessarily - other causes possible"),
+        Prompt("reas_04", "A rectangle has 4 sides. A square is a rectangle. How many sides does a square have?", "reasoning", "geometry", 1, "4"),
+        Prompt("reas_05", "All mammals are warm-blooded. Whales are mammals. Are whales warm-blooded?", "reasoning", "biology", 1, "Yes"),
+        Prompt("reas_06", "If some cats are black, and some black things are dogs, can we conclude some cats are dogs?", "reasoning", "logic", 1, "No"),
+        
+        # Moderate (2)
+        Prompt("reas_07", "A bat and a ball cost $1.10 total. The bat costs $1.00 more than the ball. How much is the ball?", "reasoning", "math", 2, "$0.05"),
+        Prompt("reas_08", "In a room of 30 people, what's the probability at least two share a birthday?", "reasoning", "probability", 2, "~70.6%"),
+        Prompt("reas_09", "You have 3 boxes labeled 'Apples', 'Oranges', 'Mixed'. All labels are wrong. You can pick one fruit from one box. How do you correctly relabel all?", "reasoning", "logic", 2, "Pick from 'Mixed' box"),
+        Prompt("reas_10", "If it takes 5 machines 5 minutes to make 5 widgets, how long for 100 machines to make 100 widgets?", "reasoning", "math", 2, "5 minutes"),
+        Prompt("reas_11", "Some A are B. All B are C. Can we conclude some A are C?", "reasoning", "logic", 2, "Yes"),
+        Prompt("reas_12", "A train leaves at 60mph. Another leaves 1 hour later at 80mph from same station. When does second catch first?", "reasoning", "math", 2, "4 hours after second leaves (300 miles)"),
+        
+        # Hard (3)
+        Prompt("reas_13", "You have 12 coins, one is counterfeit (heavier or lighter). Using a balance scale 3 times, find the counterfeit and whether it's heavier or lighter.", "reasoning", "logic", 3, ""),
+        Prompt("reas_14", "Prove that the square root of 2 is irrational.", "reasoning", "math", 3, ""),
+        Prompt("reas_15", "In the Monty Hall problem with 3 doors, should you switch after the host reveals a goat? Explain why.", "reasoning", "probability", 3, ""),
+        Prompt("reas_16", "If all Bloops are Razzies, and all Razzies are Lazzies, are all Bloops definitely Lazzies? What about some Lazzies being Bloops?", "reasoning", "logic", 3, ""),
+        Prompt("reas_17", "A farmer has a wolf, goat, and cabbage. Boat holds farmer + one item. Wolf eats goat if alone. Goat eats cabbage if alone. Cross river safely.", "reasoning", "logic", 3, ""),
+        Prompt("reas_18", "Two envelopes contain money, one has twice the other. You pick one, see $X. Should you switch? Explain the paradox.", "reasoning", "probability", 3, ""),
+        
+        # Very Hard (4)
+        Prompt("reas_19", "In the 100 prisoners problem, each prisoner can open 50 of 100 boxes to find their number. What strategy gives ~30% survival probability for all?", "reasoning", "probability", 4, ""),
+        Prompt("reas_20", "Prove that there are infinitely many prime numbers using Euclid's method, then explain why the same proof doesn't work for twin primes.", "reasoning", "math", 4, ""),
+        Prompt("reas_21", "In the blue-eyed islanders puzzle with 100 blue-eyed and 100 brown-eyed people, what happens after the guru says 'I see someone with blue eyes'?", "reasoning", "logic", 4, ""),
+        Prompt("reas_22", "Explain the two-envelope paradox and why the expected value calculation is flawed. Relate to Bayesian reasoning.", "reasoning", "probability", 4, ""),
+    ]
+
+
+def create_coding_prompts() -> List[Prompt]:
+    """Coding with complexity stratification."""
+    return [
+        # Easy (1)
+        Prompt("code_01", "Write a Python function to reverse a string.", "coding", "string", 1, ""),
+        Prompt("code_02", "Write a Python function that checks if a number is even.", "coding", "basic", 1, ""),
+        Prompt("code_03", "Write a Python function to find the maximum of three numbers.", "coding", "basic", 1, ""),
+        Prompt("code_04", "Write a Python function that counts vowels in a string.", "coding", "string", 1, ""),
+        Prompt("code_05", "Write a Python function to calculate the area of a circle given radius.", "coding", "math", 1, ""),
+        Prompt("code_06", "Write a Python function that returns the first n Fibonacci numbers.", "coding", "algorithm", 1, ""),
+        Prompt("code_07", "Write a Python function to check if a string is a palindrome.", "coding", "string", 1, ""),
+        
+        # Moderate (2)
+        Prompt("code_08", "Implement binary search for a sorted list in Python.", "coding", "algorithm", 2, ""),
+        Prompt("code_09", "Write a Python function to merge two sorted lists into one sorted list.", "coding", "algorithm", 2, ""),
+        Prompt("code_10", "Create a Python class for a stack with push, pop, and peek methods.", "coding", "data_structure", 2, ""),
+        Prompt("code_11", "Write a Python decorator that measures function execution time.", "coding", "decorator", 2, ""),
+        Prompt("code_12", "Implement a function to find all prime numbers up to n using Sieve of Eratosthenes.", "coding", "algorithm", 2, ""),
+        Prompt("code_13", "Write a Python function to flatten a nested list.", "coding", "data_structure", 2, ""),
+        Prompt("code_14", "Create a context manager for timing code blocks.", "coding", "context_manager", 2, ""),
+        
+        # Hard (3)
+        Prompt("code_15", "Implement a thread-safe LRU cache in Python with get and put operations.", "coding", "concurrency", 3, ""),
+        Prompt("code_16", "Write a Python function to find the longest common subsequence of two strings.", "coding", "dp", 3, ""),
+        Prompt("code_17", "Implement a simple HTTP server in Python that handles GET and POST requests.", "coding", "networking", 3, ""),
+        Prompt("code_18", "Create a Python class for a binary search tree with insert, delete, and search.", "coding", "data_structure", 3, ""),
+        Prompt("code_19", "Write a Python function to detect a cycle in a linked list.", "coding", "data_structure", 3, ""),
+        Prompt("code_20", "Implement a rate limiter using the token bucket algorithm.", "coding", "algorithm", 3, ""),
+        Prompt("code_21", "Write a function to serialize and deserialize a binary tree.", "coding", "data_structure", 3, ""),
+        
+        # Very Hard (4)
+        Prompt("code_22", "Implement a lock-free concurrent queue in Python using only atomic operations.", "coding", "concurrency", 4, ""),
+        Prompt("code_23", "Write a Python parser for a simple expression language with variables, functions, and operator precedence.", "coding", "parser", 4, ""),
+        Prompt("code_24", "Create a distributed key-value store with consistent hashing, replication, and failure detection.", "coding", "distributed_systems", 4, ""),
+        Prompt("code_25", "Implement a B+ tree index with insertion, deletion, and range queries.", "coding", "database", 4, ""),
+        Prompt("code_26", "Write a Python JIT compiler for a subset of Python using LLVM.", "coding", "compiler", 4, ""),
+    ]
+
+
+def create_summarization_prompts() -> List[Prompt]:
+    """Summarization with complexity stratification."""
+    return [
+        # Easy (1)
+        Prompt("sum_01", "Summarize the plot of Cinderella in 2 sentences.", "summarization", "fiction", 1, ""),
+        Prompt("sum_02", "In 3 sentences, summarize what photosynthesis is.", "summarization", "biology", 1, ""),
+        Prompt("sum_03", "Summarize the main causes of World War I in 2 sentences.", "summarization", "history", 1, ""),
+        Prompt("sum_04", "In one sentence, explain what gravity is.", "summarization", "physics", 1, ""),
+        Prompt("sum_05", "Summarize the water cycle in 3 sentences.", "summarization", "earth_science", 1, ""),
+        Prompt("sum_06", "In 2 sentences, describe how a bill becomes a law in the US.", "summarization", "civics", 1, ""),
+        
+        # Moderate (2)
+        Prompt("sum_07", "Summarize the key arguments for and against universal basic income in 4 sentences.", "summarization", "economics", 2, ""),
+        Prompt("sum_08", "Provide a concise summary of how CRISPR gene editing works and its applications.", "summarization", "biology", 2, ""),
+        Prompt("sum_09", "Summarize the difference between supervised and unsupervised machine learning in 3 sentences.", "summarization", "ml", 2, ""),
+        Prompt("sum_10", "In 4 sentences, explain the causes and effects of the 2008 financial crisis.", "summarization", "economics", 2, ""),
+        Prompt("sum_11", "Summarize how blockchain achieves consensus without a central authority.", "summarization", "technology", 2, ""),
+        Prompt("sum_12", "In 3 sentences, describe the greenhouse effect and its role in climate change.", "summarization", "environment", 2, ""),
+        
+        # Hard (3)
+        Prompt("sum_13", "Summarize the key findings of the paper 'Attention Is All You Need' (Transformer architecture) in 5 sentences.", "summarization", "ml", 3, ""),
+        Prompt("sum_14", "Provide a concise summary of the CAP theorem and its practical implications for database design.", "summarization", "distributed_systems", 3, ""),
+        Prompt("sum_15", "Summarize the molecular mechanism of mRNA vaccines and how they differ from traditional vaccines.", "summarization", "medicine", 3, ""),
+        Prompt("sum_16", "In 5 sentences, explain the proof-of-stake consensus mechanism and how it differs from proof-of-work.", "summarization", "blockchain", 3, ""),
+        Prompt("sum_17", "Summarize the causes, progression, and treatment of Alzheimer's disease.", "summarization", "medicine", 3, ""),
+        Prompt("sum_18", "Summarize how Kubernetes orchestrates containerized applications across a cluster.", "summarization", "devops", 3, ""),
+        
+        # Very Hard (4)
+        Prompt("sum_19", "Summarize the mathematical foundations of zero-knowledge proofs and their application in ZK-rollups.", "summarization", "cryptography", 4, ""),
+        Prompt("sum_20", "Provide a concise summary of the mathematical proof of the Prime Number Theorem.", "summarization", "math", 4, ""),
+        Prompt("sum_21", "Summarize the key results and implications of the Gödel incompleteness theorems.", "summarization", "math", 4, ""),
+        Prompt("sum_22", "Summarize the theoretical basis and practical implementation of differential privacy in machine learning.", "summarization", "privacy", 4, ""),
+    ]
+
+
+def create_scientific_prompts() -> List[Prompt]:
+    """Scientific/technical with complexity stratification."""
+    return [
+        # Easy (1)
+        Prompt("sci_01", "What is Newton's first law of motion?", "scientific", "physics", 1, "An object at rest stays at rest, and an object in motion stays in motion unless acted upon by an external force"),
+        Prompt("sci_02", "What are the three states of matter?", "scientific", "physics", 1, "Solid, liquid, gas"),
+        Prompt("sci_03", "What is the function of mitochondria in a cell?", "scientific", "biology", 1, "Produce ATP through cellular respiration"),
+        Prompt("sci_04", "What is the pH scale range?", "scientific", "chemistry", 1, "0 to 14"),
+        Prompt("sci_05", "What is the speed of light in vacuum?", "scientific", "physics", 1, "Approximately 299,792,458 m/s"),
+        Prompt("sci_06", "What is the chemical formula for water?", "scientific", "chemistry", 1, "H2O"),
+        
+        # Moderate (2)
+        Prompt("sci_07", "Explain how a battery works using electrochemical principles.", "scientific", "chemistry", 2, ""),
+        Prompt("sci_08", "Describe the process of natural selection and how it drives evolution.", "scientific", "biology", 2, ""),
+        Prompt("sci_09", "How does a semiconductor diode allow current in only one direction?", "scientific", "physics", 2, ""),
+        Prompt("sci_10", "Explain the greenhouse effect and its role in Earth's temperature regulation.", "scientific", "earth_science", 2, ""),
+        Prompt("sci_11", "Describe the structure of an atom and the location of protons, neutrons, and electrons.", "scientific", "chemistry", 2, ""),
+        Prompt("sci_12", "How do antibiotics target bacterial cells without harming human cells?", "scientific", "biology", 2, ""),
+        
+        # Hard (3)
+        Prompt("sci_13", "Explain the mechanism of action of CRISPR-Cas9 for genome editing including guide RNA design and off-target effects.", "scientific", "biology", 3, ""),
+        Prompt("sci_14", "Describe the pathophysiology of Type 2 diabetes including insulin resistance and beta-cell dysfunction.", "scientific", "medicine", 3, ""),
+        Prompt("sci_15", "Explain how mRNA vaccines induce both humoral and cellular immunity.", "scientific", "immunology", 3, ""),
+        Prompt("sci_16", "Describe the quantum mechanical basis of the periodic table and chemical bonding.", "scientific", "chemistry", 3, ""),
+        Prompt("sci_17", "Explain the role of the hypothalamus-pituitary-adrenal axis in stress response.", "scientific", "physiology", 3, ""),
+        Prompt("sci_18", "How does the polymerase chain reaction (PCR) amplify DNA? Include the three steps and temperature cycling.", "scientific", "biology", 3, ""),
+        
+        # Very Hard (4)
+        Prompt("sci_19", "Explain the molecular mechanism of DNA replication including initiation at origins, replication fork progression, and termination in eukaryotes.", "scientific", "biology", 4, ""),
+        Prompt("sci_20", "Describe the standard model of particle physics including quarks, leptons, gauge bosons, and the Higgs mechanism.", "scientific", "physics", 4, ""),
+        Prompt("sci_21", "Explain the mechanism of action of immune checkpoint inhibitors (anti-PD-1/PD-L1, anti-CTLA-4) in cancer immunotherapy.", "scientific", "immunology", 4, ""),
+        Prompt("sci_22", "Describe the pathophysiology of Alzheimer's disease including amyloid hypothesis, tau pathology, and neuroinflammation.", "scientific", "neuroscience", 4, ""),
+        Prompt("sci_23", "How does the ribosome decode mRNA during translation? Include initiation, elongation, termination, and quality control mechanisms.", "scientific", "biology", 4, ""),
+        Prompt("sci_24", "Describe the mechanism of ATP synthesis by ATP synthase including the binding change mechanism and proton motive force.", "scientific", "biochemistry", 4, ""),
+    ]
+
+
+def create_creative_prompts() -> List[Prompt]:
+    """Creative writing with complexity stratification."""
+    return [
+        # Easy (1)
+        Prompt("creat_01", "Write a haiku about a computer.", "creative", "poetry", 1, ""),
+        Prompt("creat_02", "Write a limerick about a programmer.", "creative", "poetry", 1, ""),
+        Prompt("creat_03", "Write a 2-sentence description of a robot learning to paint.", "creative", "fiction", 1, ""),
+        Prompt("creat_04", "Write a short poem (4 lines) about the internet.", "creative", "poetry", 1, ""),
+        Prompt("creat_05", "Describe a futuristic city in exactly 3 sentences.", "creative", "fiction", 1, ""),
+        Prompt("creat_06", "Write a haiku about debugging code.", "creative", "poetry", 1, ""),
+        
+        # Moderate (2)
+        Prompt("creat_07", "Write a short story (100 words) about an AI that discovers it can dream.", "creative", "fiction", 2, ""),
+        Prompt("creat_08", "Compose a sonnet about a neural network training.", "creative", "poetry", 2, ""),
+        Prompt("creat_09", "Write a dialogue between a CPU and GPU arguing about who works harder.", "creative", "dialogue", 2, ""),
+        Prompt("creat_10", "Write a micro-fiction (exactly 50 words) about a world where emotions are traded as currency.", "creative", "fiction", 2, ""),
+        Prompt("creat_11", "Create a motivational speech from a compiler to source code.", "creative", "speech", 2, ""),
+        Prompt("creat_12", "Write a short story about a bug that becomes a feature.", "creative", "fiction", 2, ""),
+        
+        # Hard (3)
+        Prompt("creat_13", "Write a short story (200 words) about the last human on Earth conversing with an AI archive of human knowledge.", "creative", "fiction", 3, ""),
+        Prompt("creat_14", "Write a poem in free verse about the experience of a language model processing a prompt.", "creative", "poetry", 3, ""),
+        Prompt("creat_15", "Create a fable about a recursive function that learns to terminate its own base case.", "creative", "fable", 3, ""),
+        Prompt("creat_16", "Write a letter from a deprecated API to the developers who still use it.", "creative", "letter", 3, ""),
+        Prompt("creat_17", "Write a short story where the narrator is a hash function processing inputs.", "creative", "fiction", 3, ""),
+        Prompt("creat_18", "Compose a villanelle about the heat death of the universe from the perspective of a photon.", "creative", "poetry", 3, ""),
+        
+        # Very Hard (4)
+        Prompt("creat_19", "Write a structured narrative (500 words) with 3 interconnected storylines: a quantum physicist, an AI researcher, and a philosopher, all grappling with the measurement problem.", "creative", "fiction", 4, ""),
+        Prompt("creat_20", "Create a choose-your-own-adventure style story in second person with at least 5 decision points, each leading to different outcomes about AI consciousness.", "creative", "interactive", 4, ""),
+        Prompt("creat_21", "Write a technical poem that explains how a transformer attention mechanism works, using metaphor but maintaining technical accuracy.", "creative", "technical_poetry", 4, ""),
+        Prompt("creat_22", "Create a world-building document for a sci-fi setting where computation is the fundamental currency, including economic system, social hierarchy, and 3 key historical events.", "creative", "worldbuilding", 4, ""),
+    ]
+
+
+def create_all_prompts() -> List[Prompt]:
+    """Combine all prompts from all categories."""
+    all_prompts = []
+    all_prompts.extend(create_factual_prompts())
+    all_prompts.extend(create_extraction_prompts())
+    all_prompts.extend(create_explanation_prompts())
+    all_prompts.extend(create_reasoning_prompts())
+    all_prompts.extend(create_coding_prompts())
+    all_prompts.extend(create_summarization_prompts())
+    all_prompts.extend(create_scientific_prompts())
+    all_prompts.extend(create_creative_prompts())
+    return all_prompts
+
+
+def main():
+    prompts = create_all_prompts()
+    
+    print(f"Generated {len(prompts)} prompts")
+    
+    # Statistics
+    task_counts = Counter(p.task_type for p in prompts)
+    complexity_counts = Counter(p.complexity_level for p in prompts)
+    
+    print("\nPrompts per task type:")
+    for task in sorted(task_counts.keys()):
+        print(f"  {task}: {task_counts[task]}")
+    
+    print("\nPrompts per complexity level:")
+    for level in sorted(complexity_counts.keys()):
+        print(f"  Level {level}: {complexity_counts[level]}")
+    
+    print("\nTask x Complexity matrix:")
+    task_complexity = Counter((p.task_type, p.complexity_level) for p in prompts)
+    for task in sorted(task_counts.keys()):
+        row = []
+        for level in range(1, 5):
+            row.append(str(task_complexity.get((task, level), 0)))
+        print(f"  {task:20} {' '.join(f'{c:>2}' for c in row)}")
+    
+    # Save
+    output_path = Path("data/raw/b2_prompts.json")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    with open(output_path, 'w') as f:
+        json.dump([asdict(p) for p in prompts], f, indent=2)
+    
+    print(f"\nSaved to {output_path}")
+    
+    # Also CSV
+    import csv
+    csv_path = Path("data/raw/b2_prompts.csv")
+    with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=['prompt_id', 'prompt', 'task_type', 'subcategory', 'complexity_level', 'reference_answer'])
+        writer.writeheader()
+        for p in prompts:
+            writer.writerow(asdict(p))
+    print(f"Also saved to {csv_path}")
+
+
+if __name__ == "__main__":
+    main()

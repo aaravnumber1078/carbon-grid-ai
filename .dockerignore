@@ -1,0 +1,81 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.mypy_cache
+.ruff_cache
+*.egg-info
+dist
+build
+
+# Virtual environments
+.venv
+venv
+env
+.env
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Local caches
+.cache
+.pip_cache
+.huggingface
+.hf_cache
+
+# Evaluation outputs (large, not needed at runtime)
+data/evaluation/
+data/processed/
+data/raw/
+phase0_*.json
+phase0_*.py
+*_results.json
+*.jsonl
+
+# Scripts (not needed in container)
+scripts/
+experiments/
+audit_*.py
+reallocate_*.py
+generate_*.py
+fix_*.py
+test_*.py
+analyze_*.py
+select_*.py
+measure_*.py
+run_*.py
+print_report.py
+build_quantization_dataset.py
+download_carbon_data.py
+demo_*.py
+evaluate_*.py
+train_*.py
+
+# Documentation (not needed in container)
+*.md
+!README_DEPLOY.md
+
+# Backup
+*.backup
+*~
+
+# Model weights (downloaded at runtime, not baked into image)
+# models/quantization_safety/ IS COPIED (required artifacts)
+# Qwen model is NOT copied - downloaded at runtime

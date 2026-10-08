@@ -1,0 +1,328 @@
+{
+    "openapi":  "3.1.0",
+    "info":  {
+                 "title":  "CarbonGrid-AI",
+                 "description":  "Carbon-aware middleware for local LLM inference",
+                 "version":  "0.1.0"
+             },
+    "paths":  {
+                  "/health":  {
+                                  "get":  {
+                                              "summary":  "Health Check",
+                                              "description":  "Health check endpoint.",
+                                              "operationId":  "health_check_health_get",
+                                              "responses":  {
+                                                                "200":  {
+                                                                            "description":  "Successful Response",
+                                                                            "content":  {
+                                                                                            "application/json":  {
+                                                                                                                     "schema":  {
+                                                                                                                                    "$ref":  "#/components/schemas/HealthResponse"
+                                                                                                                                }
+                                                                                                                 }
+                                                                                        }
+                                                                        }
+                                                            }
+                                          }
+                              },
+                  "/classifier/info":  {
+                                           "get":  {
+                                                       "summary":  "Classifier Info",
+                                                       "description":  "Get C.1.1 classifier information.",
+                                                       "operationId":  "classifier_info_classifier_info_get",
+                                                       "responses":  {
+                                                                         "200":  {
+                                                                                     "description":  "Successful Response",
+                                                                                     "content":  {
+                                                                                                     "application/json":  {
+                                                                                                                              "schema":  {
+
+                                                                                                                                         }
+                                                                                                                          }
+                                                                                                 }
+                                                                                 }
+                                                                     }
+                                                   }
+                                       },
+                  "/carbon/status":  {
+                                         "get":  {
+                                                     "summary":  "Carbon Status",
+                                                     "description":  "Get carbon provider status.",
+                                                     "operationId":  "carbon_status_carbon_status_get",
+                                                     "responses":  {
+                                                                       "200":  {
+                                                                                   "description":  "Successful Response",
+                                                                                   "content":  {
+                                                                                                   "application/json":  {
+                                                                                                                            "schema":  {
+
+                                                                                                                                       }
+                                                                                                                        }
+                                                                                               }
+                                                                               }
+                                                                   }
+                                                 }
+                                     },
+                  "/generate":  {
+                                    "post":  {
+                                                 "summary":  "Generate",
+                                                 "description":  "Generate text with carbon-aware precision selection.\n\nPipeline:\n1. Extract classifier features from prompt\n2. Get safety probability from C.1.1 classifier\n3. Get current carbon intensity\n4. Run Decision Engine\n5. Execute inference at selected precision\n6. Return response with full telemetry",
+                                                 "operationId":  "generate_generate_post",
+                                                 "requestBody":  {
+                                                                     "content":  {
+                                                                                     "application/json":  {
+                                                                                                              "schema":  {
+                                                                                                                             "$ref":  "#/components/schemas/GenerationRequest"
+                                                                                                                         }
+                                                                                                          }
+                                                                                 },
+                                                                     "required":  true
+                                                                 },
+                                                 "responses":  {
+                                                                   "200":  {
+                                                                               "description":  "Successful Response",
+                                                                               "content":  {
+                                                                                               "application/json":  {
+                                                                                                                        "schema":  {
+                                                                                                                                       "$ref":  "#/components/schemas/GenerationResponse"
+                                                                                                                                   }
+                                                                                                                    }
+                                                                                           }
+                                                                           },
+                                                                   "422":  {
+                                                                               "description":  "Validation Error",
+                                                                               "content":  {
+                                                                                               "application/json":  {
+                                                                                                                        "schema":  {
+                                                                                                                                       "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                   }
+                                                                                                                    }
+                                                                                           }
+                                                                           }
+                                                               }
+                                             }
+                                },
+                  "/decision/test":  {
+                                         "post":  {
+                                                      "summary":  "Test Decision",
+                                                      "description":  "Test the Decision Engine directly with custom input.",
+                                                      "operationId":  "test_decision_decision_test_post",
+                                                      "requestBody":  {
+                                                                          "content":  {
+                                                                                          "application/json":  {
+                                                                                                                   "schema":  {
+                                                                                                                                  "additionalProperties":  true,
+                                                                                                                                  "type":  "object",
+                                                                                                                                  "title":  "Input Data"
+                                                                                                                              }
+                                                                                                               }
+                                                                                      },
+                                                                          "required":  true
+                                                                      },
+                                                      "responses":  {
+                                                                        "200":  {
+                                                                                    "description":  "Successful Response",
+                                                                                    "content":  {
+                                                                                                    "application/json":  {
+                                                                                                                             "schema":  {
+
+                                                                                                                                        }
+                                                                                                                         }
+                                                                                                }
+                                                                                },
+                                                                        "422":  {
+                                                                                    "description":  "Validation Error",
+                                                                                    "content":  {
+                                                                                                    "application/json":  {
+                                                                                                                             "schema":  {
+                                                                                                                                            "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                        }
+                                                                                                                         }
+                                                                                                }
+                                                                                }
+                                                                    }
+                                                  }
+                                     },
+                  "/":  {
+                            "get":  {
+                                        "summary":  "Root",
+                                        "description":  "Root endpoint with basic info.",
+                                        "operationId":  "root__get",
+                                        "responses":  {
+                                                          "200":  {
+                                                                      "description":  "Successful Response",
+                                                                      "content":  {
+                                                                                      "application/json":  {
+                                                                                                               "schema":  {
+
+                                                                                                                          }
+                                                                                                           }
+                                                                                  }
+                                                                  }
+                                                      }
+                                    }
+                        }
+              },
+    "components":  {
+                       "schemas":  {
+                                       "GenerationRequest":  {
+                                                                 "properties":  {
+                                                                                    "prompt":  {
+                                                                                                   "type":  "string",
+                                                                                                   "minLength":  1,
+                                                                                                   "title":  "Prompt",
+                                                                                                   "description":  "Input prompt for generation"
+                                                                                               },
+                                                                                    "max_new_tokens":  {
+                                                                                                           "type":  "integer",
+                                                                                                           "maximum":  512.0,
+                                                                                                           "minimum":  1.0,
+                                                                                                           "title":  "Max New Tokens",
+                                                                                                           "description":  "Maximum new tokens to generate",
+                                                                                                           "default":  128
+                                                                                                       },
+                                                                                    "latency_requirement_ms":  {
+                                                                                                                   "anyOf":  [
+                                                                                                                                 {
+                                                                                                                                     "type":  "number"
+                                                                                                                                 },
+                                                                                                                                 {
+                                                                                                                                     "type":  "null"
+                                                                                                                                 }
+                                                                                                                             ],
+                                                                                                                   "title":  "Latency Requirement Ms",
+                                                                                                                   "description":  "Optional latency requirement in milliseconds"
+                                                                                                               },
+                                                                                    "task_type":  {
+                                                                                                      "anyOf":  [
+                                                                                                                    {
+                                                                                                                        "type":  "string"
+                                                                                                                    },
+                                                                                                                    {
+                                                                                                                        "type":  "null"
+                                                                                                                    }
+                                                                                                                ],
+                                                                                                      "title":  "Task Type",
+                                                                                                      "description":  "Optional task type hint for classifier",
+                                                                                                      "default":  "unknown"
+                                                                                                  }
+                                                                                },
+                                                                 "type":  "object",
+                                                                 "required":  [
+                                                                                  "prompt"
+                                                                              ],
+                                                                 "title":  "GenerationRequest",
+                                                                 "description":  "Request for text generation."
+                                                             },
+                                       "GenerationResponse":  {
+                                                                  "properties":  {
+                                                                                     "response":  {
+                                                                                                      "type":  "string",
+                                                                                                      "title":  "Response",
+                                                                                                      "description":  "Generated text response"
+                                                                                                  },
+                                                                                     "carbon_grid":  {
+                                                                                                         "additionalProperties":  true,
+                                                                                                         "type":  "object",
+                                                                                                         "title":  "Carbon Grid",
+                                                                                                         "description":  "CarbonGrid decision and telemetry data"
+                                                                                                     }
+                                                                                 },
+                                                                  "type":  "object",
+                                                                  "required":  [
+                                                                                   "response"
+                                                                               ],
+                                                                  "title":  "GenerationResponse",
+                                                                  "description":  "Response from text generation with CarbonGrid telemetry."
+                                                              },
+                                       "HTTPValidationError":  {
+                                                                   "properties":  {
+                                                                                      "detail":  {
+                                                                                                     "items":  {
+                                                                                                                   "$ref":  "#/components/schemas/ValidationError"
+                                                                                                               },
+                                                                                                     "type":  "array",
+                                                                                                     "title":  "Detail"
+                                                                                                 }
+                                                                                  },
+                                                                   "type":  "object",
+                                                                   "title":  "HTTPValidationError"
+                                                               },
+                                       "HealthResponse":  {
+                                                              "properties":  {
+                                                                                 "status":  {
+                                                                                                "type":  "string",
+                                                                                                "title":  "Status"
+                                                                                            },
+                                                                                 "version":  {
+                                                                                                 "type":  "string",
+                                                                                                 "title":  "Version"
+                                                                                             },
+                                                                                 "classifier_loaded":  {
+                                                                                                           "type":  "boolean",
+                                                                                                           "title":  "Classifier Loaded"
+                                                                                                       },
+                                                                                 "carbon_provider_mode":  {
+                                                                                                              "type":  "string",
+                                                                                                              "title":  "Carbon Provider Mode"
+                                                                                                          },
+                                                                                 "inference_provider_status":  {
+                                                                                                                   "additionalProperties":  true,
+                                                                                                                   "type":  "object",
+                                                                                                                   "title":  "Inference Provider Status"
+                                                                                                               }
+                                                                             },
+                                                              "type":  "object",
+                                                              "required":  [
+                                                                               "status",
+                                                                               "version",
+                                                                               "classifier_loaded",
+                                                                               "carbon_provider_mode",
+                                                                               "inference_provider_status"
+                                                                           ],
+                                                              "title":  "HealthResponse",
+                                                              "description":  "Health check response."
+                                                          },
+                                       "ValidationError":  {
+                                                               "properties":  {
+                                                                                  "loc":  {
+                                                                                              "items":  {
+                                                                                                            "anyOf":  [
+                                                                                                                          {
+                                                                                                                              "type":  "string"
+                                                                                                                          },
+                                                                                                                          {
+                                                                                                                              "type":  "integer"
+                                                                                                                          }
+                                                                                                                      ]
+                                                                                                        },
+                                                                                              "type":  "array",
+                                                                                              "title":  "Location"
+                                                                                          },
+                                                                                  "msg":  {
+                                                                                              "type":  "string",
+                                                                                              "title":  "Message"
+                                                                                          },
+                                                                                  "type":  {
+                                                                                               "type":  "string",
+                                                                                               "title":  "Error Type"
+                                                                                           },
+                                                                                  "input":  {
+                                                                                                "title":  "Input"
+                                                                                            },
+                                                                                  "ctx":  {
+                                                                                              "type":  "object",
+                                                                                              "title":  "Context"
+                                                                                          }
+                                                                              },
+                                                               "type":  "object",
+                                                               "required":  [
+                                                                                "loc",
+                                                                                "msg",
+                                                                                "type"
+                                                                            ],
+                                                               "title":  "ValidationError"
+                                                           }
+                                   }
+                   }
+}

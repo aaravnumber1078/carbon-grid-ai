@@ -1,0 +1,88 @@
+{
+  "total_prompts": 400,
+  "dev_count": 340,
+  "test_count": 60,
+  "exact_duplicates": [],
+  "unresolved_placeholders": [],
+  "malformed_grammar": [],
+  "contradictory_instructions": [],
+  "length_band_counts": {
+    "dev": {
+      "input": {
+        "very_short": 34,
+        "short": 68,
+        "medium": 102,
+        "long": 85,
+        "very_long": 51
+      },
+      "output": {
+        "very_short": 34,
+        "short": 68,
+        "medium": 102,
+        "long": 85,
+        "very_long": 51
+      }
+    },
+    "test": {
+      "input": {
+        "very_short": 6,
+        "short": 12,
+        "medium": 18,
+        "long": 15,
+        "very_long": 9
+      },
+      "output": {
+        "very_short": 6,
+        "short": 12,
+        "very_long": 9,
+        "medium": 18,
+        "long": 15
+      }
+    }
+  },
+  "category_counts": {
+    "dev": {
+      "extraction": 34,
+      "explanation": 34,
+      "reasoning": 34,
+      "coding": 35,
+      "scientific": 34,
+      "creative": 34,
+      "multi_turn": 34,
+      "factual": 34,
+      "summarization": 33,
+      "instruction_heavy": 34
+    },
+    "test": {
+      "factual": 6,
+      "summarization": 7,
+      "instruction_heavy": 6,
+      "coding": 5,
+      "explanation": 6,
+      "reasoning": 6,
+      "multi_turn": 6,
+      "scientific": 6,
+      "creative": 6,
+      "extraction": 6
+    }
+  },
+  "test_band_coverage": {
+    "input": [
+      "very_long",
+      "medium",
+      "short",
+      "long",
+      "very_short"
+    ],
+    "output": [
+      "very_long",
+      "medium",
+      "short",
+      "long",
+      "very_short"
+    ]
+  },
+  "feature_leakage": [],
+  "seed_reproducible": true,
+  "cross_split_similarity_count": 0
+}
